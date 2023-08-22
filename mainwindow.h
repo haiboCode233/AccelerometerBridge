@@ -8,7 +8,7 @@
 #include "module/wave_view/mwaveview.h"
 #include "module/udp/udp_receiver_qt.h"
 #include "module/file_writer/file_writer_qt.h"
-#define A 2
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
