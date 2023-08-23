@@ -20,9 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     readJson();
 
-    if(this->state == 1)
-        QThread::msleep(1000 * 60);
-
     // ui对象
     ui = new Ui::MainWindow();
     ui->setupUi(this);
@@ -61,13 +58,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     if (this->state == 1)
     {
-//        on_pushButton_clicked();
-//        on_pushButton_start_clicked();
-//        on_pushButton_2_clicked();
+        on_pushButton_clicked();
+        on_pushButton_start_clicked();
+        on_pushButton_2_clicked();
         //  改成检测到有没有消息，没有就一直等
-        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_clicked);
-        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_start_clicked);
-        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_2_clicked);
+//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_clicked);
+//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_start_clicked);
+//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_2_clicked);
 
     }
 }

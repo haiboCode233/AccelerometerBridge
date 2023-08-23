@@ -34,7 +34,8 @@ void file_writer_qt::startwriteFile(void* data)
 //                             << floatMatrix[2][i] << ","
 //                             << floatMatrix[3][i] << "\n";
 
-            this->outputfile << floatMatrix[0][i] << ","
+            this->outputfile << std::fixed
+                             << floatMatrix[0][i] << ","
                              << floatMatrix[1][i] << ","
                              << floatMatrix[2][i] << ","
                              << floatMatrix[3][i] << "\n";
