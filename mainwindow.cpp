@@ -1,22 +1,9 @@
-/***************************************************************
- * @Copyright(C)    wangchongwei (版权申明请勿删除)
- * @FileName:       mainwindow.cpp
- * @Author:         wangchongwei
- * @Version:        1.0.0
- * @Date:           2021.7.11
- *
- * 个人微信号: wang_chongwei
- * 个人公众号: 王崇卫
- * CSDN: https://blog.csdn.net/qq_38190041
- * 个人网站: https://wang_chong_wei.gitee.io/blog/
- ***************************************************************/
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , state(false)  //开启自启标志位
 {
     readJson();
 
@@ -61,10 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
         on_pushButton_clicked();
         on_pushButton_start_clicked();
         on_pushButton_2_clicked();
-        //  改成检测到有没有消息，没有就一直等
-//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_clicked);
-//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_start_clicked);
-//        QTimer::singleShot(1000*60, this, &MainWindow::on_pushButton_2_clicked);
 
     }
 }
@@ -88,6 +71,7 @@ void MainWindow::readJson()
     QFile file("./test.json");
     if(!file.open(QIODevice::ReadOnly| QIODevice::Text))
     {
+        this->state = 0;
         return;
     }
     QByteArray array = file.readAll(); //将数据读到array中
@@ -103,7 +87,9 @@ void MainWindow::readJson()
             this->state = 1;
         else
             this->state = 0;
+        return;
     }
+    this->state = 0;
 }
 
 void MainWindow::onHourlyTimeout()
