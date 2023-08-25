@@ -3,9 +3,16 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent), net_state(false)
 {
     readJson();
+
+    // 接收对象
+    receiver = new Udp_Receiver_Qt();
+    receiver->moveToThread(&receiverThread);
+    connect(receiver, &Udp_Receiver_Qt::dataReceived, this, &MainWindow::onDataCheck, Qt::QueuedConnection);
+    connect(receiver, &Udp_Receiver_Qt::dataReceived, this, &MainWindow::onDataReceived, Qt::QueuedConnection);
+    receiverThread.start();
 
     // ui对象
     ui = new Ui::MainWindow();
@@ -21,12 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     // 写文件对象
     writer = new file_writer_qt();
     writer->moveToThread(&writerThread);
-
     writer->outputfilename = "data";
-
-    // 接收对象
-    receiver = new Udp_Receiver_Qt();
-    receiver->moveToThread(&receiverThread);
 
     // 定时器 每秒检查 每一小时新建一个新文件
     timer = new QTimer();
@@ -35,20 +37,16 @@ MainWindow::MainWindow(QWidget *parent)
 
     // 设置定时器间隔为1秒
 
-
-    connect(receiver, &Udp_Receiver_Qt::dataReceived, this, &MainWindow::onDataReceived, Qt::QueuedConnection);
     connect(receiver, &Udp_Receiver_Qt::dataReceived, writer, &file_writer_qt::startwriteFile, Qt::QueuedConnection);
 
-
-    receiverThread.start();
     writerThread.start();
 
     if (this->state == 1)
     {
-        on_pushButton_clicked();
-        on_pushButton_start_clicked();
-        on_pushButton_2_clicked();
-
+//        on_pushButton_clicked();
+//        on_pushButton_start_pause_clicked();
+//        on_pushButton_2_clicked();
+        ;
     }
 }
 
@@ -92,6 +90,8 @@ void MainWindow::readJson()
     this->state = 0;
 }
 
+
+// 每小时创建一个文件存储数据
 void MainWindow::onHourlyTimeout()
 {
     QDateTime currentDateTime = QDateTime::currentDateTime();
@@ -104,12 +104,25 @@ void MainWindow::onHourlyTimeout()
     }
 }
 
+
+// 回调函数
+// 检测网络连接
+void MainWindow::onDataCheck(void* data)
+{
+    if(1)  // 后续加上data的检验条件
+    {
+        MainWindow::net_state = true;
+        QObject::disconnect(receiver, &Udp_Receiver_Qt::dataReceived, this, &MainWindow::onDataCheck);
+    }
+
+}
+
 // 回调函数
 // 接收到数据后画图
 void MainWindow::onDataReceived(void* data)
 {
     float (*floatMatrix)[20] = static_cast<float(*)[20]>(data);
-
+    MainWindow::net_state = true;
     static int param[4];
     static int count[4] = {0,0,0,0};
     QPointF point;
@@ -225,24 +238,34 @@ void MainWindow::on_checkBox_3_stateChanged(int arg1)
     }
 }
 
-// 接收关
-void MainWindow::on_pushButton_pause_clicked()
+
+// 接收开关
+void MainWindow::on_pushButton_start_pause_clicked()
 {
-    QMetaObject::invokeMethod(receiver, &Udp_Receiver_Qt::stopReceive);
-    wave->pauseGraph();
-    writer->outputfile.close();
+    if (ui->pushButton_start_pause->text() == "开始接收")
+    {
+        ui->pushButton_start_pause->setText("关闭接收");
+
+
+        QDateTime currentDateTime = QDateTime::currentDateTime();
+        writer->outputfilename = currentDateTime.date().toString(Qt::ISODate) + "-" + currentDateTime.time().toString("hh");
+
+
+        writer->outputfile.open(writer->outputfilename.toStdString()+".csv", std::ios_base::app);
+        QMetaObject::invokeMethod(receiver, &Udp_Receiver_Qt::startReceive_);
+    }
+    else
+    {
+        ui->pushButton_start_pause->setText("开始接收");
+        QMetaObject::invokeMethod(receiver, &Udp_Receiver_Qt::stopReceive);
+        writer->outputfile.close();
+    }
 }
 
-// 接收开
-void MainWindow::on_pushButton_start_clicked()
+void MainWindow::on_pushButton_net_clicked()
 {
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    writer->outputfilename = currentDateTime.date().toString(Qt::ISODate) + "-" + currentDateTime.time().toString("hh");
-
-
-    writer->outputfile.open(writer->outputfilename.toStdString()+".csv", std::ios_base::app);
-    QMetaObject::invokeMethod(receiver, &Udp_Receiver_Qt::startReceive_);
-    wave->startGraph();
+    net_win = new netwindow();
+    net_win->show();
 }
 
 // 设置输出频率
@@ -291,4 +314,3 @@ void MainWindow::on_pushButton_2_clicked()
     }
 
 }
-

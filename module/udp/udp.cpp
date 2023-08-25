@@ -420,23 +420,23 @@ void UDPReceiver::receive_loop()
 }
 
 // 启动接收函数（新）
-void UDPReceiver::startReceive_new(std::vector<std::queue<float>>& OutputData)
-{
-    std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
-    std::string received_data(buffer_.data(), bytes_transferred);
+//void UDPReceiver::startReceive_new(std::vector<std::queue<float>>& OutputData)
+//{
+//    std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
+//    std::string received_data(buffer_.data(), bytes_transferred);
 
-    handleReceivedData(received_data);
-    processRawData();
+//    handleReceivedData(received_data);
+//    processRawData();
 
-    OutputData = processed_data_;
-    for (int i = 0; i < ChannelSize; i++)
-    {
-        while (!processed_data_[i].empty())
-        {
-            processed_data_[i].pop();
-        }
-    }
-}
+//    OutputData = processed_data_;
+//    for (int i = 0; i < ChannelSize; i++)
+//    {
+//        while (!processed_data_[i].empty())
+//        {
+//            processed_data_[i].pop();
+//        }
+//    }
+//}
 
 void UDPReceiver::startReceive_new(float output[4][20])
 {
@@ -455,84 +455,4 @@ void UDPReceiver::startReceive_new(float output[4][20])
         }
     }
 }
-
-// int UDPReceiver::startReceive_new_async(float** output)
-// {
-//     char * buffer;
-//     socket_.async_receive(asio::buffer(buffer),
-//         [this](std::size_t bytes_transferred)
-//         {
-//             handleReceive_new_async(bytes_transferred);
-//         });
-
-// }
-
-// int UDPReceiver::handleReceive_new_async(std::size_t bytes_transferred)
-// {
-//     std::string received_data(buffer_.data(), bytes_transferred);
-
-//     handleReceivedData(received_data);
-//     processRawData();
-
-//     output = processed_data_;
-
-//     return 0;
-// }
-
-// // 解包数据到向量
-// int UDPReceiver::handleReceivedData_new(std::string input, float **output)
-// {
-//    std::istringstream iss(input);  // 创建字符串流
-//    std::string line;
-//    data_per_bag_ = input.size()/50;
-
-//    // std::cout << input.size() << std::endl;
-//    for (int i = 0; i < data_per_bag_; i++)  // 按行读取字符串
-//    {
-//        std::getline(iss, line);
-//        size_t startPos = line.find(":");   // 去除每行开头的"data: "部分
-
-//        if (startPos != std::string::npos)  // 有效数据
-//        {
-//            line = line.substr(startPos + 2);
-//            std::istringstream lineStream(line);  // 创建每行的字符串流
-//            std::string value;
-//            for (int j = 0; j < ChannelSize; j++)  // 按列处理数据
-//            {
-//                if (std::getline(lineStream, value, ','))  // 按逗号分割字符串
-//                {
-//                    float number = std::strtod(value.c_str(), nullptr);  // 将字符串转换为 float
-//                    // std::cout << std::fixed << number << " ";    // *test
-//                    raw_data_[j].push(number - bias_[j]);
-//                }
-//            }
-//            // std::cout << std::endl;  // *test
-//        }
-//        else    // 无效数据
-//        {
-//            for (int j = 0; j < ChannelSize; j++)  // 按列处理数据
-//            {
-//                float number = raw_data_[j].back();
-//                raw_data_[j].push(number - bias_[j]);
-//            }
-//        }
-//    }
-//    return 0;
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

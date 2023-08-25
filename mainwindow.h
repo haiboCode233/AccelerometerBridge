@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
+#include "netwindow.h"
 #include "module/udp/udp.h"
 #include "module/wave_view/mwaveview.h"
 #include "module/udp/udp_receiver_qt.h"
@@ -18,6 +19,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    netwindow *net_win;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -25,6 +27,7 @@ private slots:
 
     void readJson();
     void onHourlyTimeout();
+    void onDataCheck(void* data);
     void onDataReceived(void* data);
 
     // 量程旋钮
@@ -38,8 +41,10 @@ private slots:
     void on_checkBox_3_stateChanged(int arg1);
 
     // 接收启停开关
-    void on_pushButton_pause_clicked();
-    void on_pushButton_start_clicked();
+    void on_pushButton_start_pause_clicked();
+
+    // 网络页面
+    void on_pushButton_net_clicked();
 
     // 输出频率下拉框
     void on_comboBox_currentIndexChanged(int index);
@@ -53,9 +58,14 @@ private slots:
     // 波形显示开关
     void on_pushButton_2_clicked();
 
+
+
+
+
 private:
     // stateflag
     bool state;
+    bool net_state;
 
     // ui
     Ui::MainWindow *ui;

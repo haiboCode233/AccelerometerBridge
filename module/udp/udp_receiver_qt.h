@@ -27,10 +27,7 @@ public:
     void get_bias();
 
 signals:
-    void dataReceived_(std::vector<std::queue<double>> data);
-//    void dataReceived(float data[4][20]);
     void dataReceived(void* data);
-//    void dataReceived(float data);
 
 public slots:
 

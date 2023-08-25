@@ -46,7 +46,7 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QPushButton" name="pushButton_pause">
+      <widget class="QPushButton" name="pushButton_net">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -56,10 +56,10 @@
         </rect>
        </property>
        <property name="text">
-        <string>停止接收</string>
+        <string>网络状态</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_start">
+      <widget class="QPushButton" name="pushButton_start_pause">
        <property name="geometry">
         <rect>
          <x>10</x>
@@ -397,7 +397,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
