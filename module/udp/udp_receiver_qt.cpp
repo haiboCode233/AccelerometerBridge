@@ -29,6 +29,11 @@ void Udp_Receiver_Qt::stopReceive()
     isRunning = false;
 }
 
+void Udp_Receiver_Qt::emitUdpStatus()
+{
+    emit udpStatus(udp_status);
+}
+
 void Udp_Receiver_Qt::get_bias()
 {
     udpreceiver->getBias();

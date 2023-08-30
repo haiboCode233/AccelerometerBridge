@@ -28,15 +28,18 @@ public:
 
 signals:
     void dataReceived(void* data);
+    void udpStatus(bool status);
 
 public slots:
 
     void startReceive_();
     void stopReceive();
+    void emitUdpStatus();
 
 private:
     UDPReceiver *udpreceiver;
-     // 用于控制循环是否运行的标志
+    bool udp_status = true;
+
 
 
 };

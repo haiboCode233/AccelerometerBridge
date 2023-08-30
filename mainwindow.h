@@ -6,6 +6,7 @@
 #include <QTimer>
 #include "netwindow.h"
 #include "module/udp/udp.h"
+#include "module/net_check/netcheck.h"
 #include "module/wave_view/mwaveview.h"
 #include "module/udp/udp_receiver_qt.h"
 #include "module/file_writer/file_writer_qt.h"
@@ -27,7 +28,7 @@ private slots:
 
     void readJson();
     void onHourlyTimeout();
-    void onDataCheck(void* data);
+    void StartUdpTimer(void);
     void onDataReceived(void* data);
 
     // 量程旋钮
@@ -71,10 +72,14 @@ private:
     Ui::MainWindow *ui;
 
     //object
-    QTimer *timer;
+    QTimer *timer_1s;
+    QTimer *timer_udp;
     MWaveView *wave;
     Udp_Receiver_Qt *receiver;
     file_writer_qt *writer;
+
+    //class
+    NetCheck *net_checker;
 
     // parameter
     int outputFrequency;
@@ -86,6 +91,9 @@ private:
     // thread
     QThread receiverThread;
     QThread writerThread;
+
+signals:
+    void is_recvbtn_clicked(bool status);
 
 };
 #endif // MAINWINDOW_H

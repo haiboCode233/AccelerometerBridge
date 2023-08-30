@@ -155,6 +155,7 @@ void MWaveView::clearChannel(WAVE_CH ch)
         this->m_wave.map_series[ch]->clear();
     }
 }
+
 // 设置范围
 void MWaveView::setRangeX(int rangeX)
 {

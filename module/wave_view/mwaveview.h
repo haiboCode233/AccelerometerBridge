@@ -143,6 +143,9 @@ private:
     QBoxLayout *wave_layout;
     Wave m_wave;
     Event m_event;
+
+signals:
+    ;
 };
 
 #endif // MWAVEVIEW_H

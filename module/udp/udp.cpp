@@ -10,6 +10,7 @@ UDPReceiver::UDPReceiver():
     raw_data_(ChannelSize),
     processed_data_(ChannelSize)
 {
+    asio::socket_base::bytes_readable command(true);
     // 初始化 filter_
     Filter fir;
     fir.order = 200;
@@ -374,11 +375,6 @@ void UDPReceiver::receive_once(int data_number)
         std::cout << "-file open error" << std::endl;
     else
         std::cout << "-file is open" << std::endl;
-    
-    // 获取偏置
-    // std::cout << "-start to get bias\n";
-    // getBias();
-    // std::cout << "-SUCCESS\n" << std::endl;
 
     receive_max = data_number;
     receive_loop_flag_ = 0;     // 单次
@@ -419,27 +415,32 @@ void UDPReceiver::receive_loop()
     output_file_.close();
 }
 
-// 启动接收函数（新）
-//void UDPReceiver::startReceive_new(std::vector<std::queue<float>>& OutputData)
-//{
-//    std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
-//    std::string received_data(buffer_.data(), bytes_transferred);
-
-//    handleReceivedData(received_data);
-//    processRawData();
-
-//    OutputData = processed_data_;
-//    for (int i = 0; i < ChannelSize; i++)
-//    {
-//        while (!processed_data_[i].empty())
-//        {
-//            processed_data_[i].pop();
-//        }
-//    }
-//}
-
-void UDPReceiver::startReceive_new(float output[4][20])
+bool UDPReceiver::startReceive_new(float output[4][20])
 {
+    /*    非阻塞模式
+    socket_.async_receive(asio::buffer(buffer_.data(), buffer_.size()),
+    [=](const std::error_code& error, std::size_t bytes_transferred)
+    {
+        if (!error)
+        {
+            qDebug()<<"bytes_num:  "<<bytes_transferred;
+            std::string received_data(buffer_.data(), bytes_transferred);
+
+            handleReceivedData(received_data);
+            processRawData();
+
+            for (int i = 0; i < ChannelSize; i++)
+            {
+                for (int j = 0; j < 20; j++)
+                {
+                    output[i][j] = processed_data_[i].front();
+                    processed_data_[i].pop();
+                }
+            }
+
+        }
+        });
+    */
     std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
     std::string received_data(buffer_.data(), bytes_transferred);
 
@@ -450,9 +451,10 @@ void UDPReceiver::startReceive_new(float output[4][20])
     {
         for (int j = 0; j < 20; j++)
         {
-            output[i][j] = processed_data_[i].front();
-            processed_data_[i].pop();
+                output[i][j] = processed_data_[i].front();  //  需要处理，当设备断电重新启动的时候会发送提示信息，导致数组混乱
+                processed_data_[i].pop();
         }
     }
+    return true;
 }
 

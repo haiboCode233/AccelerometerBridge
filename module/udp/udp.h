@@ -9,6 +9,8 @@
 #include <asio.hpp>
 #include <iomanip>
 #include "filter.h"
+#include <QDebug>
+#include <exception>
 
 class UDPReceiver {
 public:
@@ -30,6 +32,7 @@ public:
     asio::io_context io_context_;                       // 异步控制器
     asio::ip::udp::socket socket_;                      // 套接字
     std::array<char, 5000> buffer_;                     // 接收buff
+    char buffer_char[5000];
 
     std::vector<float> filter_;                        // 滤波器系数向量
 
@@ -75,7 +78,7 @@ private:
     void getTimeStamp();
 
 public:
-    void startReceive_new(float output[4][20]);
+    bool startReceive_new(float output[4][20]);
     int startReceive_new_async(float** output);
     int handleReceive_new_async(std::size_t bytes_transferred);
     int handleReceivedData_new(std::string input, float **output);

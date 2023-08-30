@@ -52,7 +52,10 @@ include_directories(
 
 # Add the executable target
 add_executable(demo ${SOURCES} ${HEADS} ${UI}
-    netwindow.h netwindow.cpp netwindow.ui)
+    netwindow.h netwindow.cpp netwindow.ui
+    module/net_check/netcheck.cpp module/net_check/netcheck.h
+
+)
 
 
 # Link against the Qt libraries

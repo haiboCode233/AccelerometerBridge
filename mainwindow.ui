@@ -55,8 +55,32 @@
          <height>41</height>
         </rect>
        </property>
+       <property name="cursor">
+        <cursorShape>ArrowCursor</cursorShape>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
        <property name="text">
         <string>网络状态</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>true</bool>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>false</bool>
+       </property>
+       <property name="flat">
+        <bool>false</bool>
        </property>
       </widget>
       <widget class="QPushButton" name="pushButton_start_pause">
@@ -203,12 +227,27 @@
         </property>
         <item>
          <property name="text">
+          <string>10Hz</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>20Hz</string>
          </property>
         </item>
         <item>
          <property name="text">
           <string>50Hz</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>100Hz</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>200Hz</string>
          </property>
         </item>
        </widget>
@@ -368,7 +407,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>关闭显示</string>
+        <string>打开显示</string>
        </property>
       </widget>
      </widget>
