@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     // ui对象
     ui = new Ui::MainWindow();
     ui->setupUi(this);
+    net_win = new netwindow();
 
     this->outputFrequency = 20;  // 2000hz  -->  20hz
     ui->lineEdit->setPlaceholderText("Default");
@@ -47,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     //  传递“接收按钮”的按下状态到网络检查
     connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);
+    //  网络窗口关闭释放网络按钮
+    connect(net_win, &netwindow::sig_netbtn_work, this, &MainWindow::set_netbtn_work);
 
     if (this->state == 1)
     {
@@ -138,7 +141,7 @@ void MainWindow::onDataReceived(void* data)
         for (int j = 0; j < 20; j++)
         {
             count[i] ++;
-            if (count[i] % (2000/this->outputFrequency)/2 == 0)  // count[i]不断累加，Freq为50时候，(2000/50)/2 = 20, 也就是每20个数据采样一次
+            if ((count[i] % (2000/this->outputFrequency)) == 0)  // count[i]不断累加，Freq为50时候，(2000/50)/2 = 20, 也就是每20个数据采样一次
             {
                 param[i]++;
                 point.setY(floatMatrix[i][j]);
@@ -186,6 +189,52 @@ void MainWindow::on_dial_X_sliderMoved(int position)
     else {
         wave->ZoomOutX();
     }
+}
+
+void MainWindow::on_Xslider_valueChanged(int value)
+{
+    static int value_last = 50;
+    int value_reserve = value;
+    if(value > value_last)
+    {
+        while(((value - value_last)/5))
+        {
+            value = value - 5;
+            wave->ZoomOutX();
+        }
+    }
+    else
+    {
+        while((value_last - value)/5)
+        {
+            value_last = value_last - 5;
+            wave->ZoomX();
+        }
+    }
+    value_last = value_reserve;
+}
+
+void MainWindow::on_YSlider_valueChanged(int value)
+{
+    static int value_last = 50;
+    int value_reserve = value;
+    if(value > value_last)
+    {
+        while(((value - value_last)/5))
+        {
+            value = value - 5;
+            wave->ZoomOutY();
+        }
+    }
+    else
+    {
+        while((value_last - value)/5)
+        {
+            value_last = value_last - 5;
+            wave->ZoomY();
+        }
+    }
+    value_last = value_reserve;
 }
 
 void MainWindow::on_dial_Y_sliderMoved(int position)
@@ -273,17 +322,14 @@ void MainWindow::on_pushButton_start_pause_clicked()
 
 void MainWindow::on_pushButton_net_clicked()
 {
-    if(ui->pushButton_net->isChecked())
-    {
-        ui->pushButton_net->setDown(false);
-        net_win = new netwindow();
-        net_win->show();
-    }
-    else
-    {
-        ;
-    }
+    ui->pushButton_net->setEnabled(false);
+    net_win->show();
+}
 
+
+void MainWindow::set_netbtn_work()
+{
+    ui->pushButton_net->setEnabled(true);
 }
 
 // 设置输出频率
@@ -292,24 +338,24 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     switch (index)
     {
     case 0:
-        this->outputFrequency = 1;
-        writer->outputfrequency = 1;
+        this->outputFrequency = 5;
+        writer->outputfrequency = 5;
         break;
     case 1:
-        this->outputFrequency = 20;
-        writer->outputfrequency = 20;
-        break;
-    case 2:
         this->outputFrequency = 50;
         writer->outputfrequency = 50;
         break;
-    case 3:
-        this->outputFrequency = 100;
-        writer->outputfrequency = 100;
-        break;
-    case 4:
+    case 2:
         this->outputFrequency = 200;
         writer->outputfrequency = 200;
+        break;
+    case 3:
+        this->outputFrequency = 500;
+        writer->outputfrequency = 500;
+        break;
+    case 4:
+        this->outputFrequency = 1000;
+        writer->outputfrequency = 1000;
         break;
     }
 }
@@ -330,16 +376,16 @@ void MainWindow::on_pushButton_clicked()
 }
 
 // 波形显示开关
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_pushButton_wave_clicked()
 {
-    if (ui->pushButton_2->text() == "打开显示")
+    if (ui->pushButton_wave->text() == "▶")
     {
-        ui->pushButton_2->setText("关闭显示");
+        ui->pushButton_wave->setText("||");
         wave->startGraph();
     }
     else
     {
-        ui->pushButton_2->setText("打开显示");
+        ui->pushButton_wave->setText("▶");
         wave->pauseGraph();
     }
 

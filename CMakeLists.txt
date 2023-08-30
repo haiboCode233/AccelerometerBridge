@@ -17,28 +17,33 @@ set(SOURCES
     main.cpp
 
     mainwindow.cpp
+    netwindow.cpp
 
     module/wave_view/mwaveview.cpp
     module/filter/filter.cpp
     module/udp/udp.cpp
     module/udp/udp_receiver_qt.cpp
     module/file_writer/file_writer_qt.cpp
+    module/net_check/netcheck.cpp
 )
 
 set(HEADS
     main.cpp
 
     mainwindow.h
+    netwindow.h
 
     module/wave_view/mwaveview.h
     module/filter/filter.h
     module/udp/udp.h
     module/udp/udp_receiver_qt.h
     module/file_writer/file_writer_qt.h
+    module/net_check/netcheck.h
 )
 
 set(UI
     mainwindow.ui
+    netwindow.ui
 )
 
 include_directories(
@@ -48,13 +53,11 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/module/udp
         ${CMAKE_CURRENT_SOURCE_DIR}/module/wave_view
         ${CMAKE_CURRENT_SOURCE_DIR}/module/file_writer
+        ${CMAKE_CURRENT_SOURCE_DIR}/module/net_check
 )
 
 # Add the executable target
 add_executable(demo ${SOURCES} ${HEADS} ${UI}
-    netwindow.h netwindow.cpp netwindow.ui
-    module/net_check/netcheck.cpp module/net_check/netcheck.h
-
 )
 
 

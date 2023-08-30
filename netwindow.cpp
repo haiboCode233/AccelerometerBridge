@@ -8,6 +8,11 @@ netwindow::netwindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
+void netwindow::closeEvent(QCloseEvent *e)
+{
+    emit sig_netbtn_work();
+}
+
 netwindow::~netwindow()
 {
     delete ui;

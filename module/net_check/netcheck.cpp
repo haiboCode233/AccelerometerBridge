@@ -14,7 +14,7 @@ void NetCheck::PeriodNetCheck()
     }
     else
     {
-        qDebug()<<"请开始接收！";
+        //qDebug()<<"请开始接收！";
     }
 }
 

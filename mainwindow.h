@@ -5,11 +5,11 @@
 #include <QDebug>
 #include <QTimer>
 #include "netwindow.h"
-#include "module/udp/udp.h"
+#include "udp.h"  // 不能删，删了报错winsock.h has been included
 #include "module/net_check/netcheck.h"
 #include "module/wave_view/mwaveview.h"
-#include "module/udp/udp_receiver_qt.h"
 #include "module/file_writer/file_writer_qt.h"
+#include "module/udp/udp_receiver_qt.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -57,11 +57,15 @@ private slots:
     void on_pushButton_clicked();
 
     // 波形显示开关
-    void on_pushButton_2_clicked();
+    void on_pushButton_wave_clicked();
 
 
+    // 设置网络按钮可用
+    void set_netbtn_work();
 
+    void on_Xslider_valueChanged(int value);
 
+    void on_YSlider_valueChanged(int value);
 
 private:
     // stateflag
@@ -91,6 +95,7 @@ private:
     // thread
     QThread receiverThread;
     QThread writerThread;
+
 
 signals:
     void is_recvbtn_clicked(bool status);
