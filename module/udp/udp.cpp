@@ -415,7 +415,7 @@ void UDPReceiver::receive_loop()
     output_file_.close();
 }
 
-bool UDPReceiver::startReceive_new(float output[4][20])
+bool UDPReceiver::startReceive_new(udp_data &dat)
 {
     /*    非阻塞模式
     socket_.async_receive(asio::buffer(buffer_.data(), buffer_.size()),
@@ -451,7 +451,7 @@ bool UDPReceiver::startReceive_new(float output[4][20])
     {
         for (int j = 0; j < 20; j++)
         {
-                output[i][j] = processed_data_[i].front();  //  需要处理，当设备断电重新启动的时候会发送提示信息，导致数组混乱
+                (dat.readFromArray())[i][j] = processed_data_[i].front();  //  需要处理，当设备断电重新启动的时候会发送提示信息，导致数组混乱
                 processed_data_[i].pop();
         }
     }

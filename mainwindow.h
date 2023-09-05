@@ -10,6 +10,7 @@
 #include "module/wave_view/mwaveview.h"
 #include "module/file_writer/file_writer_qt.h"
 #include "module/udp/udp_receiver_qt.h"
+#include "module/udp/udp_data.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -29,7 +30,7 @@ private slots:
     void readJson();
     void onHourlyTimeout();
     void StartUdpTimer(void);
-    void onDataReceived(void* data);
+    void onDataReceived();
 
     // 量程旋钮
     void on_dial_X_sliderMoved(int position);

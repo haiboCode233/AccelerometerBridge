@@ -11,6 +11,7 @@
 #include "filter.h"
 #include <QDebug>
 #include <exception>
+#include "udp_data.h"
 
 class UDPReceiver {
 public:
@@ -77,8 +78,9 @@ private:
     // 获取时间戳
     void getTimeStamp();
 
+
 public:
-    bool startReceive_new(float output[4][20]);
+    bool startReceive_new(udp_data &dat);
     int startReceive_new_async(float** output);
     int handleReceive_new_async(std::size_t bytes_transferred);
     int handleReceivedData_new(std::string input, float **output);

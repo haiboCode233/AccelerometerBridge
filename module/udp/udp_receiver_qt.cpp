@@ -17,8 +17,8 @@ void Udp_Receiver_Qt::startReceive_()
     isRunning = true;
     while(isRunning)
     {
-        udpreceiver->startReceive_new(outputdata);
-        emit dataReceived(outputdata);
+        udpreceiver->startReceive_new(udpOutData);
+        emit dataReceived();
         // 让线程处理其他未处理事件
         QApplication::processEvents();
     }

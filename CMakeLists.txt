@@ -58,6 +58,7 @@ include_directories(
 
 # Add the executable target
 add_executable(demo ${SOURCES} ${HEADS} ${UI}
+    module/udp/udp_data.h module/udp/udp_data.cpp
 )
 
 

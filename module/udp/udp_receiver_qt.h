@@ -16,8 +16,8 @@ class Udp_Receiver_Qt : public QObject
 public:
     Udp_Receiver_Qt(QObject *parent = nullptr);
     ~Udp_Receiver_Qt();
-
     std::vector<std::queue<double>> OutputData;
+    udp_data udpOutData;
     float outputdata[4][20];
     QQueue<float> dataQQueuefloat;
 
@@ -27,7 +27,7 @@ public:
     void get_bias();
 
 signals:
-    void dataReceived(void* data);
+    void dataReceived();
     void udpStatus(bool status);
 
 public slots:

@@ -11,6 +11,7 @@
 #include <fstream>
 #include <queue>
 #include <vector>
+#include "module/udp/udp_data.h"
 
 
 class file_writer_qt : public QObject
@@ -26,7 +27,7 @@ public:
     int outputfrequency;
 
 public slots:
-    void startwriteFile(void* data);
+    void startwriteFile(udp_data &dat);
 
 };
 

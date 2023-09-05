@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent)
     writer = new file_writer_qt();
     writer->moveToThread(&writerThread);
     writer->outputfilename = "data";
+    writerThread.start();
 
     //  网络检查
     net_checker = new NetCheck();
@@ -43,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     timer_1s->start(1000);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::StartUdpTimer);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::onHourlyTimeout);
-    connect(receiver, &Udp_Receiver_Qt::dataReceived, writer, &file_writer_qt::startwriteFile, Qt::QueuedConnection);
     writerThread.start();
 
     //  传递“接收按钮”的按下状态到网络检查
@@ -63,11 +63,12 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     // 停止线程并等待其退出
-    receiverThread.quit();
-    receiverThread.wait();
     writerThread.quit();
     writerThread.wait();
-
+    writerThread.deleteLater();
+    receiverThread.quit();
+    receiverThread.wait();
+    receiverThread.deleteLater();
 
 
     delete ui;
@@ -129,10 +130,10 @@ void MainWindow::onHourlyTimeout()
 
 // 回调函数
 // 接收到数据后画图
-void MainWindow::onDataReceived(void* data)
+void MainWindow::onDataReceived()
 {
-    float (*floatMatrix)[20] = static_cast<float(*)[20]>(data);
     MainWindow::net_state = true;
+    writer->startwriteFile(receiver->udpOutData);
     static int param[4];
     static int count[4] = {0,0,0,0};  //  接收的数据计数器
     QPointF point;
@@ -141,22 +142,22 @@ void MainWindow::onDataReceived(void* data)
         for (int j = 0; j < 20; j++)
         {
             count[i] ++;
-            if ((count[i] % (2000/this->outputFrequency)) == 0)  // count[i]不断累加，Freq为50时候，(2000/50)/2 = 20, 也就是每20个数据采样一次
+            if ((count[i] % (2000/this->outputFrequency)) == 0)
             {
                 param[i]++;
-                point.setY(floatMatrix[i][j]);
+                point.setY(receiver->udpOutData.readFromArray()[i][j]);
                 point.setX(param[i]);
                 this->wave_data[i].append(point);
                 count[i] = 0;
             }
-            while (this->wave_data[i].size() > 5000/*this->outputFrequency*500*/)
+            while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
             {
                 this->wave_data[i].removeFirst();
             }
         }
         wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
-        timer_udp->stop();
     }
+    timer_udp->stop();
 }
 
 // 处理旋钮函数
@@ -338,12 +339,12 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     switch (index)
     {
     case 0:
-        this->outputFrequency = 5;
-        writer->outputfrequency = 5;
+        this->outputFrequency = 20;
+        writer->outputfrequency = 20;
         break;
     case 1:
-        this->outputFrequency = 50;
-        writer->outputfrequency = 50;
+        this->outputFrequency = 100;
+        writer->outputfrequency = 100;
         break;
     case 2:
         this->outputFrequency = 200;
@@ -356,6 +357,10 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     case 4:
         this->outputFrequency = 1000;
         writer->outputfrequency = 1000;
+        break;
+    case 5:
+        this->outputFrequency = 2000;
+        writer->outputfrequency = 2000;
         break;
     }
 }
