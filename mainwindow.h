@@ -8,9 +8,10 @@
 #include "udp.h"  // 不能删，删了报错winsock.h has been included
 #include "module/net_check/netcheck.h"
 #include "module/wave_view/mwaveview.h"
-#include "module/file_writer/file_writer_qt.h"
+#include "module/file_writer/file_writer.h"
 #include "module/udp/udp_receiver_qt.h"
 #include "module/udp/udp_data.h"
+#include "module/api/api.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -80,10 +81,9 @@ private:
     QTimer *timer_1s;
     QTimer *timer_udp;
     MWaveView *wave;
-    Udp_Receiver_Qt *receiver;
-    file_writer_qt *writer;
 
     //class
+    acqlib_api qt_api;
     NetCheck *net_checker;
 
     // parameter
@@ -95,11 +95,12 @@ private:
 
     // thread
     QThread receiverThread;
-    QThread writerThread;
 
 
 signals:
     void is_recvbtn_clicked(bool status);
+    void start_recv();
+    void stop_recv();
 
 };
 #endif // MAINWINDOW_H

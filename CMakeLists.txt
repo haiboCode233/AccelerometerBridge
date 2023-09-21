@@ -23,7 +23,7 @@ set(SOURCES
     module/filter/filter.cpp
     module/udp/udp.cpp
     module/udp/udp_receiver_qt.cpp
-    module/file_writer/file_writer_qt.cpp
+    module/file_writer/file_writer.cpp
     module/net_check/netcheck.cpp
 )
 
@@ -37,7 +37,7 @@ set(HEADS
     module/filter/filter.h
     module/udp/udp.h
     module/udp/udp_receiver_qt.h
-    module/file_writer/file_writer_qt.h
+    module/file_writer/file_writer.h
     module/net_check/netcheck.h
 )
 
@@ -59,6 +59,8 @@ include_directories(
 # Add the executable target
 add_executable(demo ${SOURCES} ${HEADS} ${UI}
     module/udp/udp_data.h module/udp/udp_data.cpp
+    module/api/api.cpp
+    module/api/api.h
 )
 
 

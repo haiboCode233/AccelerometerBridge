@@ -443,7 +443,6 @@ bool UDPReceiver::startReceive_new(udp_data &dat)
     */
     std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
     std::string received_data(buffer_.data(), bytes_transferred);
-
     handleReceivedData(received_data);
     processRawData();
 

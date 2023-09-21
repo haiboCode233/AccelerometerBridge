@@ -19,11 +19,7 @@ public:
     std::vector<std::queue<double>> OutputData;
     udp_data udpOutData;
     float outputdata[4][20];
-    QQueue<float> dataQQueuefloat;
-
-    QList<QPointF> data[4];
     bool isRunning;
-
     void get_bias();
 
 signals:
