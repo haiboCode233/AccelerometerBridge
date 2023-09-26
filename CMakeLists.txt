@@ -22,9 +22,10 @@ set(SOURCES
     module/wave_view/mwaveview.cpp
     module/filter/filter.cpp
     module/udp/udp.cpp
-    module/udp/udp_receiver_qt.cpp
+    module/udp/udp_receiver.cpp
     module/file_writer/file_writer.cpp
     module/net_check/netcheck.cpp
+    module/wave_update/waveupdate.cpp
 )
 
 set(HEADS
@@ -36,9 +37,10 @@ set(HEADS
     module/wave_view/mwaveview.h
     module/filter/filter.h
     module/udp/udp.h
-    module/udp/udp_receiver_qt.h
+    module/udp/udp_receiver.h
     module/file_writer/file_writer.h
     module/net_check/netcheck.h
+    module/wave_update/waveupdate.h
 )
 
 set(UI
@@ -54,6 +56,7 @@ include_directories(
         ${CMAKE_CURRENT_SOURCE_DIR}/module/wave_view
         ${CMAKE_CURRENT_SOURCE_DIR}/module/file_writer
         ${CMAKE_CURRENT_SOURCE_DIR}/module/net_check
+        ${CMAKE_CURRENT_SOURCE_DIR}/module/wave_update
 )
 
 # Add the executable target

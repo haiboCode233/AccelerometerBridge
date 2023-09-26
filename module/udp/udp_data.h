@@ -2,14 +2,12 @@
 #define UDP_DATA_H
 #include <iostream>
 #include <mutex>
-#include <QObject>
 #define DATA_ROWS 4
 #define DATA_COLS 20
 
 
-class udp_data : public QObject
+class udp_data
 {
-    Q_OBJECT
     public:
         udp_data();
         ~udp_data();

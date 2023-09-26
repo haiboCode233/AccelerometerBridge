@@ -4,13 +4,11 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QTimer>
+#include <QThread>
 #include "netwindow.h"
 #include "udp.h"  // 不能删，删了报错winsock.h has been included
 #include "module/net_check/netcheck.h"
 #include "module/wave_view/mwaveview.h"
-#include "module/file_writer/file_writer.h"
-#include "module/udp/udp_receiver_qt.h"
-#include "module/udp/udp_data.h"
 #include "module/api/api.h"
 
 QT_BEGIN_NAMESPACE
@@ -68,11 +66,13 @@ private slots:
     void on_Xslider_valueChanged(int value);
 
     void on_YSlider_valueChanged(int value);
+//  api
+    void api_start_receive();
+    void api_stop_receive();
 
 private:
     // stateflag
     bool state;
-    bool net_state;
 
     // ui
     Ui::MainWindow *ui;
@@ -83,7 +83,7 @@ private:
     MWaveView *wave;
 
     //class
-    acqlib_api qt_api;
+    acqlib_api *qt_api;
     NetCheck *net_checker;
 
     // parameter
@@ -92,9 +92,8 @@ private:
 
     // container
     QList<QPointF> wave_data[4];
-
     // thread
-    QThread receiverThread;
+    QThread data_receive_thread;
 
 
 signals:

@@ -4,13 +4,15 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), net_state(false)
+    : QMainWindow(parent)
 {
     readJson();
-    qt_api.acqlib_init();
-    qt_api.receiver->moveToThread(&receiverThread);
-    receiverThread.start();
 
+    qt_api = new acqlib_api();
+    qt_api->acqlib_init();
+    std::thread thread_receiver(&Udp_Receiver::loopReceive, &qt_api->receiver);
+    thread_receiver.detach();
+    qt_api->acqlib_active_receiver_thread();
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
@@ -33,35 +35,24 @@ MainWindow::MainWindow(QWidget *parent)
     timer_1s->start(1000);
 
     connect(timer_udp, &QTimer::timeout, net_checker, &NetCheck::PeriodNetCheck);  // 定时器启动并且达到定时时间，说明未接收到消息
-    connect(qt_api.receiver, &Udp_Receiver_Qt::dataReceived, this, &MainWindow::onDataReceived, Qt::QueuedConnection);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::StartUdpTimer);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::onHourlyTimeout);
-    connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);  //  传递“接收按钮”的按下状态到网络检查
     connect(net_win, &netwindow::sig_netbtn_work, this, &MainWindow::set_netbtn_work);  //  网络窗口关闭释放网络按钮
-    connect(this, &MainWindow::start_recv, qt_api.receiver, &Udp_Receiver_Qt::startReceive_);
-    connect(this, &MainWindow::stop_recv, qt_api.receiver, &Udp_Receiver_Qt::stopReceive);
-    if (this->state == 1)
-    {
-        ;
-    }
+    connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);  //  传递“接收按钮”的按下状态到网络检查
+    connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
+    connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
 }
 
 MainWindow::~MainWindow()
 {
-    qt_api.acqlib_deinit();
-    // 停止线程并等待其退出
-    receiverThread.quit();
-    receiverThread.wait();
-    receiverThread.deleteLater();
-
+    qt_api->acqlib_deinit();
+    delete qt_api;
+    delete net_checker;
+    delete timer_udp;
     delete ui;
     delete net_win;
     delete wave;
-    delete net_checker;
     delete timer_1s;
-    delete timer_udp;
-
-
 }
 
 void MainWindow::readJson()
@@ -101,42 +92,49 @@ void MainWindow::onHourlyTimeout()
     QDateTime currentDateTime = QDateTime::currentDateTime();
     if (currentDateTime.time().minute() == 0 && currentDateTime.time().second() == 0)
     {
-        qt_api.writer->outputfile.close(); // 先关闭上一个
-        qt_api.writer->getNowTime();
-        qt_api.writer->outputfile.open(qt_api.writer->outPutFileName, std::ios_base::app);
+        qt_api->writer.outputfile.close(); // 先关闭上一个
+        qt_api->writer.getNowTime();
+        qt_api->writer.outputfile.open(qt_api->writer.outPutFileName, std::ios_base::app);
     }
 }
 
-// 回调函数
 // 接收到数据后画图
 void MainWindow::onDataReceived()
 {
-    MainWindow::net_state = true;
-    qt_api.acqlib_write_file();
-    static int param[4];
-    static int count[4] = {0,0,0,0};  //  接收的数据计数器
-    QPointF point;
-    for (int i = 0; i < 4; i++)
+    if(qt_api->receiver.receive_finish)
     {
-        for (int j = 0; j < 20; j++)
+        qt_api->acqlib_write_file();
+        static int param[4];
+        static int count[4] = {0,0,0,0};  //  接收的数据计数器
+        QPointF point;
+        for (int i = 0; i < 4; i++)  // 四个通道
         {
-            count[i] ++;
-            if ((count[i] % (2000/this->outputFrequency)) == 0)
+            for (int j = 0; j < 20; j++)
             {
-                param[i]++;
-                point.setY(qt_api.acqlib_get_data(i,j));
-                point.setX(param[i]);
-                this->wave_data[i].append(point);
-                count[i] = 0;
+                count[i] ++;
+                if ((count[i] % (2000/this->outputFrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
+                {
+                    param[i]++;
+                    point.setY(qt_api->acqlib_get_data(i,j));
+                    point.setX(param[i]);
+                    this->wave_data[i].append(point);
+                    count[i] = 0;
+                }
+                while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
+                {
+                    this->wave_data[i].removeFirst();
+                }
             }
-            while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
-            {
-                this->wave_data[i].removeFirst();
-            }
+            wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
         }
-        wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
+        qt_api->receiver.receive_finish = false;
+        timer_udp->stop();
     }
-    timer_udp->stop();
+    else
+    {
+        ;
+    }
+
 }
 
 // 处理旋钮函数
@@ -280,15 +278,15 @@ void MainWindow::on_pushButton_start_pause_clicked()
     if (ui->pushButton_start_pause->text() == "开始接收")
     {
         ui->pushButton_start_pause->setText("关闭接收");
-        qt_api.writer->getNowTime();
-        qt_api.writer->outputfile.open(qt_api.writer->outPutFileName, std::ios_base::app);
+        qt_api->writer.getNowTime();
+        qt_api->writer.outputfile.open(qt_api->writer.outPutFileName, std::ios_base::app);
         emit start_recv();
         emit is_recvbtn_clicked(true);
     }
     else
     {
         ui->pushButton_start_pause->setText("开始接收");
-        qt_api.writer->outputfile.close();
+        qt_api->writer.outputfile.close();
         emit stop_recv();
         emit is_recvbtn_clicked(false);
     }
@@ -313,27 +311,27 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     {
     case 0:
         this->outputFrequency = 20;
-        qt_api.writer->outputfrequency = 20;
+        qt_api->writer.outputfrequency = 20;
         break;
     case 1:
         this->outputFrequency = 100;
-        qt_api.writer->outputfrequency = 100;
+        qt_api->writer.outputfrequency = 100;
         break;
     case 2:
         this->outputFrequency = 200;
-        qt_api.writer->outputfrequency = 200;
+        qt_api->writer.outputfrequency = 200;
         break;
     case 3:
         this->outputFrequency = 500;
-        qt_api.writer->outputfrequency = 500;
+        qt_api->writer.outputfrequency = 500;
         break;
     case 4:
         this->outputFrequency = 1000;
-        qt_api.writer->outputfrequency = 1000;
+        qt_api->writer.outputfrequency = 1000;
         break;
     case 5:
         this->outputFrequency = 2000;
-        qt_api.writer->outputfrequency = 2000;
+        qt_api->writer.outputfrequency = 2000;
         break;
     }
 }
@@ -342,13 +340,13 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 {
     this->outputFilename = arg1;
-    qt_api.writer->outPutFileName = arg1.toStdString();
+    qt_api->writer.outPutFileName = arg1.toStdString();
 }
 
 // 消除偏置
 void MainWindow::on_pushButton_clicked()
 {
-    qt_api.receiver->get_bias();
+    qt_api->receiver.get_bias();
 
 }
 
@@ -366,4 +364,14 @@ void MainWindow::on_pushButton_wave_clicked()
         wave->pauseGraph();
     }
 
+}
+
+void MainWindow::api_start_receive()
+{
+    qt_api->acqlib_start_receive();
+}
+
+void MainWindow::api_stop_receive()
+{
+    qt_api->acqlib_stop_receive();
 }

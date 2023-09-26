@@ -9,7 +9,6 @@
 #include <asio.hpp>
 #include <iomanip>
 #include "filter.h"
-#include <QDebug>
 #include <exception>
 #include "udp_data.h"
 
@@ -25,7 +24,7 @@ public:
     // 阻塞接收函数
     void receive_loop();
     // 单次接收函数（新）
-    void startReceive_new(std::vector<std::queue<float>>& OutputData);
+    //void startReceive_new(std::vector<std::queue<float>>& OutputData);
     // 获取偏移
     int getBias();
 

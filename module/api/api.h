@@ -1,7 +1,8 @@
 #ifndef API_H
 #define API_H
-
-#include "module/udp/udp_receiver_qt.h"
+#include <QDebug>
+#include <thread>
+#include "module/udp/udp_receiver.h"
 #include "module/file_writer/file_writer.h"
 
 class acqlib_api
@@ -13,14 +14,13 @@ class acqlib_api
         float acqlib_get_data(int row, int col);
         int acqlib_write_file();
         int acqlib_deinit();
-
+        int acqlib_active_receiver_thread();
+        int acqlib_start_receive();
+        int acqlib_stop_receive();
 
     public:
-        Udp_Receiver_Qt *receiver;
-        file_writer *writer;
-
-
-    private:
+        Udp_Receiver receiver;
+        file_writer writer;
 
 };
 

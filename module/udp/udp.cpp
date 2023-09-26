@@ -389,7 +389,7 @@ void UDPReceiver::receive_once(int data_number)
     output_file_.close();
 }
 
-// 阻塞接收函数
+// 阻塞接收函数  没有用到
 void UDPReceiver::receive_loop()
 {
     // 创建文件
@@ -417,30 +417,6 @@ void UDPReceiver::receive_loop()
 
 bool UDPReceiver::startReceive_new(udp_data &dat)
 {
-    /*    非阻塞模式
-    socket_.async_receive(asio::buffer(buffer_.data(), buffer_.size()),
-    [=](const std::error_code& error, std::size_t bytes_transferred)
-    {
-        if (!error)
-        {
-            qDebug()<<"bytes_num:  "<<bytes_transferred;
-            std::string received_data(buffer_.data(), bytes_transferred);
-
-            handleReceivedData(received_data);
-            processRawData();
-
-            for (int i = 0; i < ChannelSize; i++)
-            {
-                for (int j = 0; j < 20; j++)
-                {
-                    output[i][j] = processed_data_[i].front();
-                    processed_data_[i].pop();
-                }
-            }
-
-        }
-        });
-    */
     std::size_t bytes_transferred = socket_.receive(asio::buffer(buffer_));
     std::string received_data(buffer_.data(), bytes_transferred);
     handleReceivedData(received_data);
