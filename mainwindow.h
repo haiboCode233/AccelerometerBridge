@@ -92,14 +92,13 @@ private:
 
     // container
     QList<QPointF> wave_data[4];
-    // thread
-    QThread data_receive_thread;
 
 
 signals:
     void is_recvbtn_clicked(bool status);
     void start_recv();
     void stop_recv();
+    void data_received();
 
 };
 #endif // MAINWINDOW_H

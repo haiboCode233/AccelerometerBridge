@@ -16,7 +16,7 @@ public:
     void startReceive();
     void stopReceive();
     void threadReceive();
-    void loopReceive();
+    void loopReceive(std::function<void()> callback);
     bool receive_finish = false;
 
 private:

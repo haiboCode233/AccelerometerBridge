@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -10,9 +9,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     qt_api = new acqlib_api();
     qt_api->acqlib_init();
-    std::thread thread_receiver(&Udp_Receiver::loopReceive, &qt_api->receiver);
-    thread_receiver.detach();
     qt_api->acqlib_active_receiver_thread();
+
+
+    auto callback = [this]() {
+        onDataReceived();
+    };
+    std::thread thread_receiver(&Udp_Receiver::loopReceive, &qt_api->receiver, callback);
+    thread_receiver.detach();
+
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
@@ -101,39 +106,37 @@ void MainWindow::onHourlyTimeout()
 // 接收到数据后画图
 void MainWindow::onDataReceived()
 {
-    if(qt_api->receiver.receive_finish)
+    qt_api->receiver.receive_finish = false;
+    qt_api->acqlib_write_file();
+    static int param[4];
+    static int count[4] = {0,0,0,0};  //  接收的数据计数器
+    QPointF point;
+    for (int i = 0; i < 4; i++)  // 四个通道
     {
-        qt_api->acqlib_write_file();
-        static int param[4];
-        static int count[4] = {0,0,0,0};  //  接收的数据计数器
-        QPointF point;
-        for (int i = 0; i < 4; i++)  // 四个通道
+        for (int j = 0; j < 20; j++)
         {
-            for (int j = 0; j < 20; j++)
+            count[i] ++;
+            if ((count[i] % (2000/this->outputFrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
             {
-                count[i] ++;
-                if ((count[i] % (2000/this->outputFrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
+                param[i]++;
+                if(param[i] > 5000)
                 {
-                    param[i]++;
-                    point.setY(qt_api->acqlib_get_data(i,j));
-                    point.setX(param[i]);
-                    this->wave_data[i].append(point);
-                    count[i] = 0;
+                    param[i] = 0;
                 }
-                while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
-                {
-                    this->wave_data[i].removeFirst();
-                }
+                point.setY(qt_api->acqlib_get_data(i,j));
+                point.setX(param[i]);
+                this->wave_data[i].append(point);
+                count[i] = 0;
             }
-            wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
+            while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
+            {
+                this->wave_data[i].removeFirst();
+            }
         }
-        qt_api->receiver.receive_finish = false;
-        timer_udp->stop();
+        wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
     }
-    else
-    {
-        ;
-    }
+
+    //timer_udp->stop();
 
 }
 
@@ -365,6 +368,7 @@ void MainWindow::on_pushButton_wave_clicked()
     }
 
 }
+
 
 void MainWindow::api_start_receive()
 {

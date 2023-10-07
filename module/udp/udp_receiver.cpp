@@ -10,7 +10,7 @@ Udp_Receiver::~Udp_Receiver()
     ;
 }
 
-void Udp_Receiver::loopReceive()
+void Udp_Receiver::loopReceive(std::function<void()> callback)
 {
     while(true)
     {
@@ -18,7 +18,7 @@ void Udp_Receiver::loopReceive()
         {
             udpreceiver.startReceive_new(udpOutData);
             receive_finish = true;
-            qDebug()<<(udpOutData.readFromArray())[0][0];
+            callback();
         }
         else
         {

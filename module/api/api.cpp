@@ -36,6 +36,7 @@ int acqlib_api::acqlib_active_receiver_thread()
 {
 //    std::thread thread_receiver(&Udp_Receiver::loopReceive, this->receiver);
 //    thread_receiver.detach();
+    return 0;
 }
 
 int acqlib_api::acqlib_start_receive()
