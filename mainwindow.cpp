@@ -6,12 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     readJson();
-
+    //api
     qt_api = new acqlib_api();
     qt_api->acqlib_init();
-    qt_api->acqlib_active_receiver_thread();
-
-
     auto callback = [this]() {
         onDataReceived();
     };
@@ -46,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);  //  传递“接收按钮”的按下状态到网络检查
     connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
     connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
+    connect(this,&MainWindow::data_received,this, &MainWindow::data_received_clr_timer);
 }
 
 MainWindow::~MainWindow()
@@ -119,7 +117,7 @@ void MainWindow::onDataReceived()
             if ((count[i] % (2000/this->outputFrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
             {
                 param[i]++;
-                if(param[i] > 5000)
+                if(param[i] >= 2000)
                 {
                     param[i] = 0;
                 }
@@ -128,16 +126,14 @@ void MainWindow::onDataReceived()
                 this->wave_data[i].append(point);
                 count[i] = 0;
             }
-            while (this->wave_data[i].size() > 5000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
+            while (this->wave_data[i].size() >= 2000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
             {
                 this->wave_data[i].removeFirst();
             }
         }
         wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
     }
-
-    //timer_udp->stop();
-
+    emit data_received();
 }
 
 // 处理旋钮函数
@@ -366,7 +362,11 @@ void MainWindow::on_pushButton_wave_clicked()
         ui->pushButton_wave->setText("▶");
         wave->pauseGraph();
     }
+}
 
+void MainWindow::data_received_clr_timer()
+{
+    timer_udp->stop();
 }
 
 

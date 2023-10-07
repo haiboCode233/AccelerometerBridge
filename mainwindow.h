@@ -66,7 +66,8 @@ private slots:
     void on_Xslider_valueChanged(int value);
 
     void on_YSlider_valueChanged(int value);
-//  api
+    void data_received_clr_timer();
+    //  api
     void api_start_receive();
     void api_stop_receive();
 
