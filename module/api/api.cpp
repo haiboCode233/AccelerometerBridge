@@ -33,10 +33,10 @@ int acqlib_api::acqlib_write_file()
     return 0;
 }
 
-int acqlib_api::acqlib_active_receiver_thread()
+int acqlib_api::acqlib_active_receiver_thread(acqlib_api * api, CallbackFunction callback_func)
 {
-    //    std::thread thread_receiver(&Udp_Receiver::loopReceive, this->receiver);
-    //    thread_receiver.detach();
+    std::thread thread_receiver(&Udp_Receiver::loopReceive, &api->receiver, callback_func);
+    thread_receiver.detach();
     return 0;
 }
 

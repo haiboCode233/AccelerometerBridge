@@ -4,6 +4,8 @@
 #include <thread>
 #include "module/udp/udp_receiver.h"
 #include "module/file_writer/file_writer.h"
+#include <functional>
+using CallbackFunction = std::function<void()>;
 #define MAX_SAMP_FREQ 2000
 #define MIN_SAMP_FREQ 1
 
@@ -16,7 +18,7 @@ class acqlib_api
         float acqlib_get_data(int row, int col);
         int acqlib_write_file();
         int acqlib_deinit();
-        int acqlib_active_receiver_thread();
+        static int acqlib_active_receiver_thread(acqlib_api * api,CallbackFunction callback_func);
         int acqlib_start_receive();
         int acqlib_stop_receive();
         int acqlib_samp_freq(int freq);

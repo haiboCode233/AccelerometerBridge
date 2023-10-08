@@ -9,12 +9,11 @@ MainWindow::MainWindow(QWidget *parent)
     //api
     qt_api = new acqlib_api();
     qt_api->acqlib_init();
+
     auto callback = [this]() {
         onDataReceived();
     };
-    std::thread thread_receiver(&Udp_Receiver::loopReceive, &qt_api->receiver, callback);
-    thread_receiver.detach();
-
+    qt_api->acqlib_active_receiver_thread(qt_api,callback);
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
