@@ -30,7 +30,8 @@ private slots:
     void onHourlyTimeout();
     void StartUdpTimer(void);
     void onDataReceived();
-
+    // 关闭事件
+    void closeEvent( QCloseEvent * event );
     // 量程旋钮
     void on_dial_X_sliderMoved(int position);
     void on_dial_Y_sliderMoved(int position);

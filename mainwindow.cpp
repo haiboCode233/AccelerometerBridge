@@ -373,3 +373,21 @@ void MainWindow::api_stop_receive()
 {
     qt_api->acqlib_stop_receive();
 }
+
+void MainWindow::closeEvent( QCloseEvent * event )//关闭窗口弹窗
+{
+    switch( QMessageBox::information( this,
+            tr("退出警告"),
+            tr("您是否需要关闭采集软件？"),
+            tr("关闭"), tr("取消"),0, 1 ) )
+    {
+        case 0:
+            event->accept();
+            break;
+        case 1:
+            ;
+        default:
+            event->ignore();
+            break;
+    }
+}
