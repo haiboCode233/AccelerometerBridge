@@ -28,7 +28,6 @@
 
 #include "mwaveview.h"
 
-
 static QColor chColor[16] = {
     QColor (255, 228, 16),
     QColor (0, 225, 255),
@@ -263,6 +262,7 @@ void MWaveView::addSeriesData(WAVE_CH ch, const QList<QPointF>& point_list)
 
     if (this->m_wave.map_series.contains(ch))
     {
+
         this->m_wave.map_series[ch]->replace(point_list);
 
         if (point_list.count()){

@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui = new Ui::MainWindow();
     ui->setupUi(this);
     net_win = new netwindow();
-    this->outputFrequency = 20;  // 2000hz  -->  20hz
     ui->lineEdit->setPlaceholderText("Default");
 
     //  图像对象
@@ -114,7 +113,7 @@ void MainWindow::onDataReceived()
         for (int j = 0; j < 20; j++)
         {
             count[i] ++;
-            if ((count[i] % (2000/this->outputFrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
+            if ((count[i] % (2000/qt_api->writer.outputfrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
             {
                 param[i]++;
                 if(param[i] >= 2000)
@@ -126,10 +125,11 @@ void MainWindow::onDataReceived()
                 this->wave_data[i].append(point);
                 count[i] = 0;
             }
-            while (this->wave_data[i].size() >= 2000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
+            if(this->wave_data[i].size() >= 2000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
             {
                 this->wave_data[i].removeFirst();
             }
+
         }
         wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
     }
@@ -309,28 +309,22 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     switch (index)
     {
     case 0:
-        this->outputFrequency = 20;
-        qt_api->writer.outputfrequency = 20;
+        qt_api->acqlib_samp_freq(20);
         break;
     case 1:
-        this->outputFrequency = 100;
-        qt_api->writer.outputfrequency = 100;
+        qt_api->acqlib_samp_freq(100);
         break;
     case 2:
-        this->outputFrequency = 200;
-        qt_api->writer.outputfrequency = 200;
+        qt_api->acqlib_samp_freq(200);
         break;
     case 3:
-        this->outputFrequency = 500;
-        qt_api->writer.outputfrequency = 500;
+        qt_api->acqlib_samp_freq(500);
         break;
     case 4:
-        this->outputFrequency = 1000;
-        qt_api->writer.outputfrequency = 1000;
+        qt_api->acqlib_samp_freq(1000);
         break;
     case 5:
-        this->outputFrequency = 2000;
-        qt_api->writer.outputfrequency = 2000;
+        qt_api->acqlib_samp_freq(2000);
         break;
     }
 }

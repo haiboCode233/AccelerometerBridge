@@ -12,6 +12,7 @@ acqlib_api::~acqlib_api()
 
 int acqlib_api::acqlib_init()
 {
+    acqlib_samp_freq(20);
     return 0;
 }
 
@@ -34,8 +35,8 @@ int acqlib_api::acqlib_write_file()
 
 int acqlib_api::acqlib_active_receiver_thread()
 {
-//    std::thread thread_receiver(&Udp_Receiver::loopReceive, this->receiver);
-//    thread_receiver.detach();
+    //    std::thread thread_receiver(&Udp_Receiver::loopReceive, this->receiver);
+    //    thread_receiver.detach();
     return 0;
 }
 
@@ -48,6 +49,20 @@ int acqlib_api::acqlib_start_receive()
 int acqlib_api::acqlib_stop_receive()
 {
     receiver.stopReceive();
+    return 0;
+}
+
+int acqlib_api::acqlib_samp_freq(int freq)
+{
+    if(freq > MAX_SAMP_FREQ)
+    {
+        freq = MAX_SAMP_FREQ;
+    }
+    if(freq < MIN_SAMP_FREQ)
+    {
+        freq = MIN_SAMP_FREQ;
+    }
+    writer.outputfrequency = freq;
     return 0;
 }
 
