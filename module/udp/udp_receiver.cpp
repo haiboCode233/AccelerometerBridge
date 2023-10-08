@@ -17,7 +17,6 @@ void Udp_Receiver::loopReceive(std::function<void()> callback)
         if(isRunning)
         {
             udpreceiver.startReceive_new(udpOutData);
-            receive_finish = true;
             callback();
         }
         else

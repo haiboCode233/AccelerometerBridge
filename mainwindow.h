@@ -27,7 +27,6 @@ public:
 private slots:
 
     void readJson();
-    void onHourlyTimeout();
     void StartUdpTimer(void);
     void onDataReceived();
     // 关闭事件

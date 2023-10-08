@@ -9,11 +9,9 @@ MainWindow::MainWindow(QWidget *parent)
     //api
     qt_api = new acqlib_api();
     qt_api->acqlib_init();
-
-    auto callback = [this]() {
-        onDataReceived();
-    };
-    qt_api->acqlib_active_receiver_thread(qt_api,callback);
+    auto callback = [this]() {  onDataReceived(); };
+    qt_api->acqlib_active_receiver_thread(qt_api, callback);
+    qt_api->acqlib_active_datastorage_thread(qt_api);
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
@@ -36,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(timer_udp, &QTimer::timeout, net_checker, &NetCheck::PeriodNetCheck);  // 定时器启动并且达到定时时间，说明未接收到消息
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::StartUdpTimer);
-    connect(timer_1s, &QTimer::timeout, this, &MainWindow::onHourlyTimeout);
     connect(net_win, &netwindow::sig_netbtn_work, this, &MainWindow::set_netbtn_work);  //  网络窗口关闭释放网络按钮
     connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);  //  传递“接收按钮”的按下状态到网络检查
     connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
@@ -87,22 +84,9 @@ void MainWindow::StartUdpTimer(void)
     timer_udp->start(1000);
 }
 
-// 每小时创建一个文件存储数据
-void MainWindow::onHourlyTimeout()
-{
-    QDateTime currentDateTime = QDateTime::currentDateTime();
-    if (currentDateTime.time().minute() == 0 && currentDateTime.time().second() == 0)
-    {
-        qt_api->writer.outputfile.close(); // 先关闭上一个
-        qt_api->writer.getNowTime();
-        qt_api->writer.outputfile.open(qt_api->writer.outPutFileName, std::ios_base::app);
-    }
-}
-
 // 接收到数据后画图
 void MainWindow::onDataReceived()
 {
-    qt_api->receiver.receive_finish = false;
     qt_api->acqlib_write_file();
     static int param[4];
     static int count[4] = {0,0,0,0};  //  接收的数据计数器
