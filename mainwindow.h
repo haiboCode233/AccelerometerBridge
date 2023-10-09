@@ -93,6 +93,7 @@ private:
 
     // container
     QList<QPointF> wave_data[4];
+    QList<QPointF> wave_data_rolling[4];
 
 
 signals:

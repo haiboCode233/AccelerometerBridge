@@ -96,7 +96,7 @@ public:
     // 追加某个通道的坐标点
     void addSeriesData(WAVE_CH ch, const QPointF& point);
     // 传入某个通道的波形
-    void addSeriesData(WAVE_CH ch, const QList<QPointF>& point_list);
+    void addSeriesData(WAVE_CH ch, QList<QPointF> point_list);
 
     // 设置X轴范围
     void setRangeX(int rangeX);

@@ -99,18 +99,16 @@ void MainWindow::onDataReceived()
             if ((count[i] % (2000/qt_api->writer.outputfrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
             {
                 param[i]++;
-                if(param[i] >= 2000)
-                {
-                    param[i] = 0;
-                }
                 point.setY(qt_api->acqlib_get_data(i,j));
                 point.setX(param[i]);
                 this->wave_data[i].append(point);
                 count[i] = 0;
             }
-            if(this->wave_data[i].size() >= 2000)  // 限定固定缓冲区范围，防止缓冲区过大（原本是与刷新率成正比）
+            if(this->wave_data[i].size() > 2000)  // 大于2000个点后需要开始滚动
             {
-                this->wave_data[i].removeFirst();
+                this->wave_data[i].clear();
+                param[i] = 0;
+
             }
 
         }

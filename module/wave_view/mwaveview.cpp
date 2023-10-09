@@ -27,7 +27,7 @@
  ***************************************************************/
 
 #include "mwaveview.h"
-
+#include <iostream>
 static QColor chColor[16] = {
     QColor (255, 228, 16),
     QColor (0, 225, 255),
@@ -254,7 +254,7 @@ void MWaveView::addSeriesData(WAVE_CH ch, const QPointF& point)
     }
 }
 
-void MWaveView::addSeriesData(WAVE_CH ch, const QList<QPointF>& point_list)
+void MWaveView::addSeriesData(WAVE_CH ch,  QList<QPointF> point_list)
 {
     static double x;
 
@@ -265,6 +265,7 @@ void MWaveView::addSeriesData(WAVE_CH ch, const QList<QPointF>& point_list)
 
         this->m_wave.map_series[ch]->replace(point_list);
 
+
         if (point_list.count()){
             x = point_list[point_list.count()-1].x();
             m_wave.last_point_x = x > m_wave.last_point_x? x: m_wave.last_point_x;
@@ -272,7 +273,6 @@ void MWaveView::addSeriesData(WAVE_CH ch, const QList<QPointF>& point_list)
         else{
             m_wave.last_point_x = 0;
         }
-
         updateRange();
     }
 }
