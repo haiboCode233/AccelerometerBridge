@@ -28,6 +28,7 @@ private slots:
 
     void readJson();
     void StartUdpTimer(void);
+    void call_onDataReceived();
     void onDataReceived();
     // 关闭事件
     void closeEvent( QCloseEvent * event );
@@ -101,6 +102,7 @@ signals:
     void start_recv();
     void stop_recv();
     void data_received();
+    void start_process_data();
 
 };
 #endif // MAINWINDOW_H

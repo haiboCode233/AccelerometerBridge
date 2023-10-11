@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     //api
     qt_api = new acqlib_api();
     qt_api->acqlib_init();
-    auto callback = [this]() {  onDataReceived(); };
+    auto callback = [this]() {  call_onDataReceived(); };
     qt_api->acqlib_active_receiver_thread(qt_api, callback);
     qt_api->acqlib_active_datastorage_thread(qt_api);
     //  网络检查
@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
     connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
     connect(this,&MainWindow::data_received,this, &MainWindow::data_received_clr_timer);
+    connect(this,&MainWindow::start_process_data,this, &MainWindow::onDataReceived);
 }
 
 MainWindow::~MainWindow()
@@ -82,6 +83,11 @@ void MainWindow::readJson()
 void MainWindow::StartUdpTimer(void)
 {
     timer_udp->start(1000);
+}
+
+void MainWindow::call_onDataReceived()
+{
+    emit start_process_data();
 }
 
 // 接收到数据后画图

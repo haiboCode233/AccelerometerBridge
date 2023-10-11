@@ -265,7 +265,6 @@ void MWaveView::addSeriesData(WAVE_CH ch,  QList<QPointF> point_list)
 
         this->m_wave.map_series[ch]->replace(point_list);
 
-
         if (point_list.count()){
             x = point_list[point_list.count()-1].x();
             m_wave.last_point_x = x > m_wave.last_point_x? x: m_wave.last_point_x;
@@ -273,6 +272,9 @@ void MWaveView::addSeriesData(WAVE_CH ch,  QList<QPointF> point_list)
         else{
             m_wave.last_point_x = 0;
         }
+
+
+
         updateRange();
     }
 }
