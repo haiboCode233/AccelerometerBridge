@@ -1,12 +1,11 @@
 #ifndef API_H
 #define API_H
 #include <QDebug>
-#include <thread>
 #include <ctime>
+#include <thread>
 #include "module/udp/udp_receiver.h"
 #include "module/file_writer/file_writer.h"
 #include <functional>
-using CallbackFunction = std::function<void()>;
 #define MAX_SAMP_FREQ 2000
 #define MIN_SAMP_FREQ 1
 
@@ -25,7 +24,7 @@ class acqlib_api
         int acqlib_start_receive();
         int acqlib_stop_receive();
         int acqlib_samp_freq(int freq);
-        int acqlib_active_receiver_thread(acqlib_api * api,CallbackFunction callback_func);
+        int acqlib_active_receiver_thread(acqlib_api * api,std::function<void()> callback_func);
         int acqlib_active_datastorage_thread(acqlib_api * api);
 
     public:

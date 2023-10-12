@@ -42,9 +42,9 @@ int acqlib_api::acqlib_write_file()
  *      ②★创建目标回调函数  “auto callback = [ClassPointer_of_onDataReceived]() {  onDataReceived(); };”
  *      ③调用本函数       “qt_api->acqlib_active_receiver_thread(qt_api,callback);”
  */
-int acqlib_api::acqlib_active_receiver_thread(acqlib_api * api, CallbackFunction callback_func)
+int acqlib_api::acqlib_active_receiver_thread(acqlib_api * api, std::function<void()> callback_func)
 {
-    std::thread thread_receiver(&Udp_Receiver::loopReceive, &api->receiver, callback_func);
+    std::thread thread_receiver(&Udp_Receiver::loopReceive_callback, &api->receiver, callback_func);
     thread_receiver.detach();
     return 0;
 }

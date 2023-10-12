@@ -7,11 +7,12 @@ MainWindow::MainWindow(QWidget *parent)
 {
     readJson();
     //api
-    qt_api = new acqlib_api();
-    qt_api->acqlib_init();
-    auto callback = [this]() {  call_onDataReceived(); };
-    qt_api->acqlib_active_receiver_thread(qt_api, callback);
-    qt_api->acqlib_active_datastorage_thread(qt_api);
+
+    receiver = new Udp_Receiver;
+    receiver->moveToThread(&receiverThread);
+    writer = new file_writer;
+
+
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
@@ -32,20 +33,27 @@ MainWindow::MainWindow(QWidget *parent)
     timer_1s = new QTimer();
     timer_1s->start(1000);
 
+    connect(receiver, &Udp_Receiver::data_received, this, &MainWindow::onDataReceived, Qt::QueuedConnection);
     connect(timer_udp, &QTimer::timeout, net_checker, &NetCheck::PeriodNetCheck);  // 定时器启动并且达到定时时间，说明未接收到消息
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::StartUdpTimer);
+    connect(timer_1s, &QTimer::timeout, this, &MainWindow::onHourlyTimeout);
     connect(net_win, &netwindow::sig_netbtn_work, this, &MainWindow::set_netbtn_work);  //  网络窗口关闭释放网络按钮
     connect(this, &MainWindow::is_recvbtn_clicked, net_checker, &NetCheck::RecvBtnStatus);  //  传递“接收按钮”的按下状态到网络检查
     connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
     connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
-    connect(this,&MainWindow::data_received,this, &MainWindow::data_received_clr_timer);
-    connect(this,&MainWindow::start_process_data,this, &MainWindow::onDataReceived);
+
+    receiverThread.start();
+    //connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
+    //connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
+    //connect(this,&MainWindow::data_received,this, &MainWindow::data_received_clr_timer);
+    //connect(this,&MainWindow::start_process_data,this, &MainWindow::onDataReceived_callback);
 }
 
 MainWindow::~MainWindow()
 {
-    qt_api->acqlib_deinit();
-    delete qt_api;
+    receiver->stopReceive();
+    delete receiver;
+    delete writer;
     delete net_checker;
     delete timer_udp;
     delete ui;
@@ -91,7 +99,7 @@ void MainWindow::call_onDataReceived()
 }
 
 // 接收到数据后画图
-void MainWindow::onDataReceived()
+void MainWindow::onDataReceived_callback()
 {
     qt_api->acqlib_write_file();
     static int param[4];
@@ -121,6 +129,50 @@ void MainWindow::onDataReceived()
         wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
     }
     emit data_received();
+}
+
+void MainWindow::onDataReceived()
+{
+    writer->startwriteFile(receiver->udpOutData);
+    static int param[4];
+    static int count[4] = {0,0,0,0};  //  接收的数据计数器
+    QPointF point;
+    for (int i = 0; i < 4; i++)  // 四个通道
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            count[i] ++;
+            if ((count[i] % (2000/writer->outputfrequency)) == 0)  // 采样率 假设outputFrequency为50，那count[i]每40个取一个，2000个里就是取50个
+            {
+                param[i]++;
+                point.setY(receiver->udpOutData.readFromArray()[i][j]);
+                point.setX(param[i]);
+                this->wave_data[i].append(point);
+                count[i] = 0;
+            }
+            if(this->wave_data[i].size() > 2000)  // 大于2000个点后需要开始滚动
+            {
+                this->wave_data[i].clear();
+                param[i] = 0;
+
+            }
+
+        }
+        wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
+    }
+    timer_udp->stop();
+    emit data_received();
+}
+
+void MainWindow::onHourlyTimeout()
+{
+    QDateTime currentDateTime = QDateTime::currentDateTime();
+    if (currentDateTime.time().minute() == 0 && currentDateTime.time().second() == 0)   //
+    {
+        writer->outputfile.close(); // 先关闭上一个
+        writer->getNowTime();
+        writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
+    }
 }
 
 // 处理旋钮函数
@@ -264,15 +316,16 @@ void MainWindow::on_pushButton_start_pause_clicked()
     if (ui->pushButton_start_pause->text() == "开始接收")
     {
         ui->pushButton_start_pause->setText("关闭接收");
-        qt_api->writer.getNowTime();
-        qt_api->writer.outputfile.open(qt_api->writer.outPutFileName, std::ios_base::app);
+        writer->getNowTime();
+        writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
+        QMetaObject::invokeMethod(receiver, &Udp_Receiver::loopReceive);
         emit start_recv();
         emit is_recvbtn_clicked(true);
     }
     else
     {
         ui->pushButton_start_pause->setText("开始接收");
-        qt_api->writer.outputfile.close();
+        writer->outputfile.close();
         emit stop_recv();
         emit is_recvbtn_clicked(false);
     }
@@ -296,22 +349,22 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
     switch (index)
     {
     case 0:
-        qt_api->acqlib_samp_freq(20);
+        writer->outputfrequency = 20;
         break;
     case 1:
-        qt_api->acqlib_samp_freq(100);
+        writer->outputfrequency = 100;
         break;
     case 2:
-        qt_api->acqlib_samp_freq(200);
+        writer->outputfrequency = 200;
         break;
     case 3:
-        qt_api->acqlib_samp_freq(500);
+        writer->outputfrequency = 500;
         break;
     case 4:
-        qt_api->acqlib_samp_freq(1000);
+        writer->outputfrequency = 1000;
         break;
     case 5:
-        qt_api->acqlib_samp_freq(2000);
+        writer->outputfrequency = 2000;
         break;
     }
 }
@@ -320,13 +373,13 @@ void MainWindow::on_comboBox_currentIndexChanged(int index)
 void MainWindow::on_lineEdit_textChanged(const QString &arg1)
 {
     this->outputFilename = arg1;
-    qt_api->writer.outPutFileName = arg1.toStdString();
+    writer->outPutFileName = arg1.toStdString();
 }
 
 // 消除偏置
 void MainWindow::on_pushButton_clicked()
 {
-    qt_api->receiver.get_bias();
+    receiver->get_bias();
 
 }
 
@@ -353,12 +406,12 @@ void MainWindow::data_received_clr_timer()
 
 void MainWindow::api_start_receive()
 {
-    qt_api->acqlib_start_receive();
+    receiver->startReceive();
 }
 
 void MainWindow::api_stop_receive()
 {
-    qt_api->acqlib_stop_receive();
+    receiver->stopReceive();
 }
 
 void MainWindow::closeEvent( QCloseEvent * event )//关闭窗口弹窗

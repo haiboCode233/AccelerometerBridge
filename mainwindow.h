@@ -27,8 +27,10 @@ public:
 private slots:
 
     void readJson();
+    void onHourlyTimeout();
     void StartUdpTimer(void);
     void call_onDataReceived();
+    void onDataReceived_callback();
     void onDataReceived();
     // 关闭事件
     void closeEvent( QCloseEvent * event );
@@ -92,9 +94,17 @@ private:
     int outputFrequency;
     QString outputFilename;
 
+    //receiver
+    Udp_Receiver *receiver;
+    file_writer *writer;
+
     // container
     QList<QPointF> wave_data[4];
     QList<QPointF> wave_data_rolling[4];
+
+    // QThread
+    QThread receiverThread;
+    QThread writerThread;
 
 
 signals:

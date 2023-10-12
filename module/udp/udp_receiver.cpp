@@ -1,6 +1,7 @@
 #include "udp_receiver.h"
 
-Udp_Receiver::Udp_Receiver()
+Udp_Receiver::Udp_Receiver(QObject *parent)
+    : QObject{parent}
 {
     ;
 }
@@ -10,7 +11,7 @@ Udp_Receiver::~Udp_Receiver()
     ;
 }
 
-void Udp_Receiver::loopReceive(std::function<void()> callback)
+void Udp_Receiver::loopReceive_callback(std::function<void()> callback)
 {
     while(true)
     {
@@ -18,6 +19,22 @@ void Udp_Receiver::loopReceive(std::function<void()> callback)
         {
             udpreceiver.startReceive_new(udpOutData);
             callback();
+        }
+        else
+        {
+            ;
+        }
+    }
+}
+
+void Udp_Receiver::loopReceive()
+{
+    while(true)
+    {
+        if(isRunning)
+        {
+            udpreceiver.startReceive_new(udpOutData);
+            emit data_received();
         }
         else
         {
