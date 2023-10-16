@@ -1,137 +1,129 @@
 #include "module/api/api.h"
 
-acqlib_api::acqlib_api()
+
+UDPReceiver *api_receiver;
+udp_data *api_data;
+file_writer *api_fileWriter;
+static bool init_flag = false;
+
+
+int api_init()
 {
-    ;
-}
-
-acqlib_api::~acqlib_api()
-{
-    ;
-}
-
-int acqlib_api::acqlib_init()
-{
-    acqlib_samp_freq(20);
-    return 0;
-}
-
-
-int acqlib_api::acqlib_deinit()
-{
-    return 0;
-}
-
-float acqlib_api::acqlib_get_data(int row, int col)
-{
-    return receiver.udpOutData.readFromArray()[row][col];
-}
-
-int acqlib_api::acqlib_write_file()
-{
-    writer.startwriteFile(receiver.udpOutData);
-    return 0;
-}
-
-
-/*
- * 功能：开启接收线程，每次运行完毕后执行回调函数callback_func来处理数据
- *      数据获取使用函数    “acqlib_get_data(i,j)”
- *
- * 案例：①创建api实例      “acqlib_api *qt_api;  qt_api = new acqlib_api();”
- *      ②★创建目标回调函数  “auto callback = [ClassPointer_of_onDataReceived]() {  onDataReceived(); };”
- *      ③调用本函数       “qt_api->acqlib_active_receiver_thread(qt_api,callback);”
- */
-int acqlib_api::acqlib_active_receiver_thread(acqlib_api * api, std::function<void()> callback_func)
-{
-    std::thread thread_receiver(&Udp_Receiver::loopReceive_callback, &api->receiver, callback_func);
-    thread_receiver.detach();
-    return 0;
-}
-
-int acqlib_api::acqlib_file_timer()
-{
-    static int now_sec = 0;
-    static int last_sec = 0;
-    while(true)
+    if(!init_flag)
     {
-        if(this->file_timer_start)
-        {
-            time_t rawtime;
-            struct tm * timeinfo;
-            char buffer[80];
+        api_receiver = new UDPReceiver();
+        api_data = new udp_data();
+        api_fileWriter = new file_writer();
+        init_flag = true;
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 
-            time(&rawtime);
-            timeinfo = localtime(&rawtime);
-            last_sec = now_sec;
-            now_sec = timeinfo->tm_sec;
-            if(last_sec != now_sec)  //每秒执行一次
+}
+
+int api_deinit()
+{
+    if(init_flag)
+    {
+        delete api_receiver;
+        delete api_data;
+        delete api_fileWriter;
+        init_flag = false;
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int api_getData_once()
+{
+    if(init_flag)
+    {
+        api_receiver->startReceive_new(*api_data);
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
+
+}
+
+int api_show_data()
+{
+    if(init_flag)
+    {
+        int row = 0;
+        int col = 0;
+        for(row=0;row<DATA_ROWS;row++)
+        {
+            std::cout<<std::endl<<"Channel: "<<row+1 << std::endl;
+            for(col=0;col<DATA_COLS;col++)
             {
-                if(timeinfo->tm_sec == 0 && timeinfo->tm_min == 0)  // 每小时创建一个文件
+                std::cout<<std::setiosflags(std::ios::scientific)<<std::setprecision(5)<<api_data->readFromArray()[row][col]<<" \t";
+                if(((col+1) % 4 == 0 && col+1 != DATA_COLS) || (row+1 == DATA_ROWS && col+1 == DATA_COLS) )
                 {
-                    writer.outputfile.close(); // 先关闭上一个
-                    writer.getNowTime();
-                    writer.outputfile.open(writer.outPutFileName, std::ios_base::app);
+                    std::cout<<std::endl;
                 }
-                //  strftime(buffer, 80, "%Y-%m-%d-%H-%M-%S", timeinfo);
-                //  std::cout << "Now time: " << buffer << std::endl;
             }
         }
-        else
-        {
-            ;
-        }
+        return 0;
     }
-}
-
-int acqlib_api::acqlib_start_file_timer()
-{
-    this->file_timer_start = true;
-    return 0;
-}
-
-int acqlib_api::acqlib_stop_file_timer()
-{
-    this->file_timer_start = false;
-    return 0;
-}
-
-/*
- * 功能：开启创建文件线程，每一小时创建一个文件
- *
- * 案例：①创建api实例     “acqlib_api *qt_api;  qt_api = new acqlib_api();”
- *      ②调用本函数      “qt_api->acqlib_active_datastorage_thread(qt_api);”
- */
-int acqlib_api::acqlib_active_datastorage_thread(acqlib_api * api)
-{
-    std::thread thread_file_timer(&acqlib_api::acqlib_file_timer, api);
-    thread_file_timer.detach();
-    return 0;
-}
-
-int acqlib_api::acqlib_start_receive()
-{
-    receiver.startReceive();
-    return 0;
-}
-
-int acqlib_api::acqlib_stop_receive()
-{
-    receiver.stopReceive();
-    return 0;
-}
-
-int acqlib_api::acqlib_samp_freq(int freq)
-{
-    if(freq > MAX_SAMP_FREQ)
+    else
     {
-        freq = MAX_SAMP_FREQ;
+        return -1;
     }
-    if(freq < MIN_SAMP_FREQ)
+}
+
+int api_getShow()
+{
+    if(init_flag)
     {
-        freq = MIN_SAMP_FREQ;
+        api_getData_once();
+        api_show_data();
+        return 0;
     }
-    writer.outputfrequency = freq;
+    else
+    {
+        return -1;
+    }
+}
+
+int api_create_file()
+{
+    api_fileWriter->outputfile.open(api_fileWriter->outPutFileName, std::ios_base::app);
     return 0;
+}
+
+int api_custom_fileName(char *custom_name)
+{
+
+    api_fileWriter->outPutFileName = custom_name;
+    return 0;
+}
+
+int api_auto_fileName()
+{
+
+    api_fileWriter->autoFileName();
+    return 0;
+}
+
+int api_write_file()
+{
+    if(init_flag)
+    {
+        api_fileWriter->startwriteFile(*api_data);
+        return 0;
+    }
+    else
+    {
+        return -1;
+    }
 }
 

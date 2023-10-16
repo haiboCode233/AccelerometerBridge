@@ -64,6 +64,11 @@ add_executable(demo ${SOURCES} ${HEADS} ${UI}
     module/udp/udp_data.h module/udp/udp_data.cpp
     module/api/api.cpp
     module/api/api.h
+    module/api/api_thread.cpp
+    module/api/api_thread.h
+
+    apiwindow.h apiwindow.cpp
+    apiwindow.ui
 )
 
 

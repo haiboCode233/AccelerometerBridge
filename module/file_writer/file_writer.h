@@ -21,7 +21,7 @@ public:
     char time_buffer[80];
     int outputfrequency;
 
-    void getNowTime();
+    void autoFileName();
     void startwriteFile(udp_data &dat);
 private:
 

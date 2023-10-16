@@ -11,7 +11,7 @@ file_writer::~file_writer()
 
 }
 
-void file_writer::getNowTime()
+void file_writer::autoFileName()
 {
     time_t rawtime;
     struct tm * timeinfo;

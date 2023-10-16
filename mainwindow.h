@@ -10,6 +10,7 @@
 #include "module/net_check/netcheck.h"
 #include "module/wave_view/mwaveview.h"
 #include "module/api/api.h"
+#include "module/api/api_thread.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

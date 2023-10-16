@@ -12,7 +12,6 @@ MainWindow::MainWindow(QWidget *parent)
     receiver->moveToThread(&receiverThread);
     writer = new file_writer;
 
-
     //  网络检查
     net_checker = new NetCheck();
     timer_udp = new QTimer();
@@ -43,10 +42,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
 
     receiverThread.start();
-    //connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
-    //connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
-    //connect(this,&MainWindow::data_received,this, &MainWindow::data_received_clr_timer);
-    //connect(this,&MainWindow::start_process_data,this, &MainWindow::onDataReceived_callback);
 }
 
 MainWindow::~MainWindow()
@@ -170,7 +165,7 @@ void MainWindow::onHourlyTimeout()
     if (currentDateTime.time().minute() == 0 && currentDateTime.time().second() == 0)   //
     {
         writer->outputfile.close(); // 先关闭上一个
-        writer->getNowTime();
+        writer->autoFileName();
         writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
     }
 }
@@ -316,7 +311,7 @@ void MainWindow::on_pushButton_start_pause_clicked()
     if (ui->pushButton_start_pause->text() == "开始接收")
     {
         ui->pushButton_start_pause->setText("关闭接收");
-        writer->getNowTime();
+        writer->autoFileName();
         writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
         QMetaObject::invokeMethod(receiver, &Udp_Receiver::loopReceive);
         emit start_recv();
