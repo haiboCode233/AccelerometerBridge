@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1024</width>
-    <height>709</height>
+    <height>768</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -20,12 +20,12 @@
    <string>Accelerometer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
      <widget class="QGroupBox" name="groupBox">
       <property name="minimumSize">
        <size>
-        <width>180</width>
+        <width>190</width>
         <height>0</height>
        </size>
       </property>
@@ -46,489 +46,335 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QPushButton" name="pushButton_net">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>610</y>
-         <width>161</width>
-         <height>41</height>
-        </rect>
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,2">
+       <property name="spacing">
+        <number>9</number>
        </property>
-       <property name="cursor">
-        <cursorShape>ArrowCursor</cursorShape>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
        </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
+       <property name="topMargin">
+        <number>0</number>
        </property>
-       <property name="text">
-        <string>网络状态</string>
+       <property name="bottomMargin">
+        <number>9</number>
        </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-       <property name="autoExclusive">
-        <bool>true</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <property name="default">
-        <bool>false</bool>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_start_pause">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>570</y>
-         <width>161</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>开始接收</string>
-       </property>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_3">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>190</y>
-         <width>161</width>
-         <height>161</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>输出参数</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>121</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>输出频率</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>60</y>
-          <width>141</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>20Hz</string>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>设备及通道</string>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>100Hz</string>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>200Hz</string>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>设备</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_2">
+            <item>
+             <property name="text">
+              <string>设备A</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>设备B</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>设备C</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>设备D</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>传感器通道</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_3">
+            <item>
+             <property name="text">
+              <string>通道A</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>通道B</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>通道C</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>通道D</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_0">
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>参数1</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_1">
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>参数2</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>参数3</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBox_3">
+            <property name="font">
+             <font>
+              <family>阿里巴巴普惠体</family>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>参数4</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>输出参数</string>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>500Hz</string>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>1kHz</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>2kHz</string>
-         </property>
-        </item>
-       </widget>
-       <widget class="QLabel" name="label_4">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>90</y>
-          <width>101</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>输出文件</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="lineEdit">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>120</y>
-          <width>101</width>
-          <height>31</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_5">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>120</y>
-          <width>41</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>.csv</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>360</y>
-         <width>161</width>
-         <height>111</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>坐标尺度</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>50</y>
-          <width>21</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Y</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>50</y>
-          <width>21</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>X</string>
-        </property>
-       </widget>
-       <widget class="QDial" name="dial_Y">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>30</y>
-          <width>71</width>
-          <height>71</height>
-         </rect>
-        </property>
-        <property name="maximum">
-         <number>10</number>
-        </property>
-        <property name="value">
-         <number>5</number>
-        </property>
-        <property name="wrapping">
-         <bool>true</bool>
-        </property>
-        <property name="notchesVisible">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QDial" name="dial_X">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>30</y>
-          <width>71</width>
-          <height>71</height>
-         </rect>
-        </property>
-        <property name="maximum">
-         <number>10</number>
-        </property>
-        <property name="value">
-         <number>5</number>
-        </property>
-        <property name="invertedAppearance">
-         <bool>false</bool>
-        </property>
-        <property name="invertedControls">
-         <bool>false</bool>
-        </property>
-        <property name="wrapping">
-         <bool>true</bool>
-        </property>
-        <property name="notchesVisible">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <zorder>dial_Y</zorder>
-       <zorder>dial_X</zorder>
-       <zorder>label_2</zorder>
-       <zorder>label</zorder>
-      </widget>
-      <widget class="QPushButton" name="pushButton">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>530</y>
-         <width>161</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>归零</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>490</y>
-         <width>161</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Reserved</string>
-       </property>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>161</width>
-         <height>151</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>设备及通道</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="QCheckBox" name="checkBox_1">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>100</y>
-          <width>56</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>阿里巴巴普惠体</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>参数2</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>50</y>
-          <width>61</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>设备A</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>设备B</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>设备C</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>设备D</string>
-         </property>
-        </item>
-       </widget>
-       <widget class="QComboBox" name="comboBox_3">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>50</y>
-          <width>61</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <item>
-         <property name="text">
-          <string>通道A</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>通道B</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>通道C</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>通道D</string>
-         </property>
-        </item>
-       </widget>
-       <widget class="QLabel" name="label_6">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>设备</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_7">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>30</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>传感器</string>
-        </property>
-       </widget>
-       <widget class="Line" name="line">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>79</y>
-          <width>118</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_2">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>120</y>
-          <width>56</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>阿里巴巴普惠体</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>参数3</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_3">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>120</y>
-          <width>56</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>阿里巴巴普惠体</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>参数4</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_0">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>100</y>
-          <width>56</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>阿里巴巴普惠体</family>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>参数1</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>图像频率</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox">
+            <item>
+             <property name="text">
+              <string>20Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>100Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>200Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>500Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1kHz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2kHz</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>保存频率</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="comboBox_4">
+            <item>
+             <property name="text">
+              <string>20Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>100Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>200Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>500Hz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1kHz</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2kHz</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>输出文件</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLineEdit" name="lineEdit"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>.csv</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1">
+         <item>
+          <widget class="QPushButton" name="pushButton_2">
+           <property name="text">
+            <string>Reserved</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton">
+           <property name="text">
+            <string>归零</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_start_pause">
+           <property name="text">
+            <string>开始接收</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_net">
+           <property name="cursor">
+            <cursorShape>ArrowCursor</cursorShape>
+           </property>
+           <property name="mouseTracking">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>网络状态</string>
+           </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="autoExclusive">
+            <bool>true</bool>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item>
      <widget class="QGroupBox" name="groupBox_5">
       <property name="font">
        <font>
@@ -544,219 +390,154 @@
       <property name="alignment">
        <set>Qt::AlignCenter</set>
       </property>
-      <widget class="QWidget" name="widget" native="true">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>20</y>
-         <width>800</width>
-         <height>550</height>
-        </rect>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>800</width>
-         <height>550</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>800</width>
-         <height>550</height>
-        </size>
-       </property>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_6">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>570</y>
-         <width>821</width>
-         <height>101</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>图像操作</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="Line" name="line_2">
-        <property name="geometry">
-         <rect>
-          <x>280</x>
-          <y>30</y>
-          <width>250</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>260</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_wave">
-        <property name="geometry">
-         <rect>
-          <x>380</x>
-          <y>60</y>
-          <width>61</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>▶</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_10">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>40</y>
-          <width>31</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>min</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_11">
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>40</y>
-          <width>31</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>max</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_12">
-        <property name="geometry">
-         <rect>
-          <x>570</x>
-          <y>40</y>
-          <width>31</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>min</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_13">
-        <property name="geometry">
-         <rect>
-          <x>780</x>
-          <y>40</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>max</string>
-        </property>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>530</x>
-          <y>60</y>
-          <width>271</width>
-          <height>29</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label_9">
-           <property name="text">
-            <string>Y轴尺度</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="YSlider">
-           <property name="singleStep">
-            <number>5</number>
-           </property>
-           <property name="sliderPosition">
-            <number>50</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TicksAbove</enum>
-           </property>
-           <property name="tickInterval">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="layoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>60</y>
-          <width>261</width>
-          <height>29</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>X轴尺度</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="Xslider">
-           <property name="singleStep">
-            <number>5</number>
-           </property>
-           <property name="sliderPosition">
-            <number>50</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TicksAbove</enum>
-           </property>
-           <property name="tickInterval">
-            <number>5</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QWidget" name="widget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>800</width>
+           <height>550</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>800</width>
+           <height>550</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>图像操作</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="2,4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1">
+            <item>
+             <widget class="QLabel" name="label_time">
+              <property name="text">
+               <string>时间尺度：1000ms</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_voltage">
+              <property name="text">
+               <string>幅值尺度：100mV</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,1,1">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QPushButton" name="time_minus_btn">
+                <property name="text">
+                 <string>缩小</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="time_plus_btn">
+                <property name="text">
+                 <string>增大</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_wave">
+                <property name="text">
+                 <string>▶</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QPushButton" name="voltage_minus_btn">
+                <property name="text">
+                 <string>缩小</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="voltage_plus_btn">
+                <property name="text">
+                 <string>增大</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1024</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

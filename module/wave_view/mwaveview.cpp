@@ -166,6 +166,16 @@ void MWaveView::setRangeY(int rangeY)
     this->m_wave.rangeY = rangeY;
 }
 
+void MWaveView::setRangeX(int begin, int end)
+{
+    this->m_wave.axisX->setRange(begin, end);
+}
+
+void MWaveView::setRangeY(double begin, double end)
+{
+    this->m_wave.axisY->setRange(begin, end);
+}
+
 void MWaveView::updateRange()
 {
     double maxX,minX;
@@ -272,10 +282,10 @@ void MWaveView::addSeriesData(WAVE_CH ch,  QList<QPointF> point_list)
         else{
             m_wave.last_point_x = 0;
         }
+//        maxY = m_event.moveY + m_wave.rangeY*0.5;
+//        minY = m_event.moveY - m_wave.rangeY*0.5;
+//        this->m_wave.axisY->setRange(minY, maxY);
 
-
-
-        updateRange();
     }
 }
 

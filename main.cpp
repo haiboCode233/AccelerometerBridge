@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "apiwindow.h"
 #include <QApplication>
-#define API_MODE 1
+#define API_MODE 0
 
 int main(int argc, char *argv[])
 {

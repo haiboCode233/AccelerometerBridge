@@ -103,6 +103,9 @@ public:
     // 设置Y轴范围
     void setRangeY(int rangeY);
 
+    void setRangeX(int begin, int end);
+    void setRangeY(double begin, double end);
+
     // 设置X轴范围放大倍数,默认1.2，不可为0，对应缩小为1/multiple
     void setZoomX(double multiple);
     // 设置Y轴范围放大倍数，默认1.2，不可为0，对应缩小为1/multiple

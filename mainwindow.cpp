@@ -145,11 +145,10 @@ void MainWindow::onDataReceived()
                 this->wave_data[i].append(point);
                 count[i] = 0;
             }
-            if(this->wave_data[i].size() > 2000)  // 大于2000个点后需要开始滚动
+            if(this->wave_data[i].size() > this->axis_x_range[axis_x_index])  // 大于2000个点后需要开始滚动
             {
                 this->wave_data[i].clear();
                 param[i] = 0;
-
             }
 
         }
@@ -167,100 +166,6 @@ void MainWindow::onHourlyTimeout()
         writer->outputfile.close(); // 先关闭上一个
         writer->autoFileName();
         writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
-    }
-}
-
-// 处理旋钮函数
-int limit(int value, int last_value, int size)
-{
-    int dir =0;
-    int tmp = value - last_value;
-    if ((tmp>0&& tmp< (size/2)) ||(tmp< -(size/2)))
-    {
-        dir = 1;
-    }
-    else if ((tmp<0 && tmp>-(size/2)) || (tmp > (size/2)))
-    {
-        dir = -1;
-    }
-    return dir;
-}
-
-void MainWindow::on_dial_X_sliderMoved(int position)
-{
-    static int last_value = 5;
-    int now_ret = 0;
-
-    now_ret = limit(position,last_value,10);
-    last_value = position;
-
-    if(now_ret>0){
-        wave->ZoomX();
-    }
-    else {
-        wave->ZoomOutX();
-    }
-}
-
-void MainWindow::on_Xslider_valueChanged(int value)
-{
-    static int value_last = 50;
-    int value_reserve = value;
-    if(value > value_last)
-    {
-        while(((value - value_last)/5))
-        {
-            value = value - 5;
-            wave->ZoomOutX();
-        }
-    }
-    else
-    {
-        while((value_last - value)/5)
-        {
-            value_last = value_last - 5;
-            wave->ZoomX();
-        }
-    }
-    value_last = value_reserve;
-}
-
-void MainWindow::on_YSlider_valueChanged(int value)
-{
-    static int value_last = 50;
-    int value_reserve = value;
-    if(value > value_last)
-    {
-        while(((value - value_last)/5))
-        {
-            value = value - 5;
-            wave->ZoomOutY();
-        }
-    }
-    else
-    {
-        while((value_last - value)/5)
-        {
-            value_last = value_last - 5;
-            wave->ZoomY();
-        }
-    }
-    value_last = value_reserve;
-}
-
-void MainWindow::on_dial_Y_sliderMoved(int position)
-{
-    static int last_value = 5;
-    int now_ret = 0;
-
-    now_ret = limit(position,last_value,10);
-    last_value = position;
-
-    if(now_ret>0){
-        wave->ZoomY();
-    }
-    else {
-        wave->ZoomOutY();
     }
 }
 
@@ -426,3 +331,189 @@ void MainWindow::closeEvent( QCloseEvent * event )//关闭窗口弹窗
             break;
     }
 }
+
+
+/*
+ * t       num    index
+ * 4000ms  8000   7
+ * 2000ms  4000   6
+ * 1000ms  2000   5
+ * 500ms   1000   4
+ * 200ms   400    3
+ * 100ms   200    2
+ * 50ms    100    1
+ * 10ms    20     0
+ *
+ */
+void MainWindow::on_time_minus_btn_clicked()
+{
+    if(axis_x_index - 1 < 0)
+    {
+        ;
+    }
+    else
+    {
+        axis_x_index--;
+    }
+    switch(axis_x_index)
+    {
+    case 0:
+        ui->label_time->setText("时间尺度：10ms");
+        break;
+    case 1:
+        ui->label_time->setText("时间尺度：50ms");
+        break;
+    case 2:
+        ui->label_time->setText("时间尺度：100ms");
+        break;
+    case 3:
+        ui->label_time->setText("时间尺度：200ms");
+        break;
+    case 4:
+        ui->label_time->setText("时间尺度：500ms");
+        break;
+    case 5:
+        ui->label_time->setText("时间尺度：1000ms");
+        break;
+    case 6:
+        ui->label_time->setText("时间尺度：2000ms");
+        break;
+    case 7:
+        ui->label_time->setText("时间尺度：4000ms");
+        break;
+    default:
+        ui->label_time->setText("error: no such index");
+        break;
+    }
+    wave->setRangeX(0, this->axis_x_range[axis_x_index]);
+}
+
+
+void MainWindow::on_time_plus_btn_clicked()
+{
+    if(axis_x_index + 1 > 7)
+    {
+        ;
+    }
+    else
+    {
+        axis_x_index++;
+    }
+    switch(axis_x_index)
+    {
+    case 0:
+        ui->label_time->setText("时间尺度：10ms");
+        break;
+    case 1:
+        ui->label_time->setText("时间尺度：50ms");
+        break;
+    case 2:
+        ui->label_time->setText("时间尺度：100ms");
+        break;
+    case 3:
+        ui->label_time->setText("时间尺度：200ms");
+        break;
+    case 4:
+        ui->label_time->setText("时间尺度：500ms");
+        break;
+    case 5:
+        ui->label_time->setText("时间尺度：1000ms");
+        break;
+    case 6:
+        ui->label_time->setText("时间尺度：2000ms");
+        break;
+    case 7:
+        ui->label_time->setText("时间尺度：4000ms");
+        break;
+    default:
+        ui->label_time->setText("error: no such index");
+        break;
+    }
+    wave->setRangeX(0, this->axis_x_range[axis_x_index]);
+}
+
+/*
+     *  voltage  index
+     *  1000mV   5
+     *  500mV    4
+     *  200mV    3
+     *  100mV    2
+     *  50mV     1
+     *  10mV     0
+     *
+     */
+void MainWindow::on_voltage_minus_btn_clicked()
+{
+    if(axis_y_index - 1 < 0)
+    {
+        ;
+    }
+    else
+    {
+        axis_y_index--;
+    }
+    switch(axis_y_index)
+    {
+    case 0:
+        ui->label_voltage->setText("幅值尺度：10mV");
+        break;
+    case 1:
+        ui->label_voltage->setText("幅值尺度：50mV");
+        break;
+    case 2:
+        ui->label_voltage->setText("幅值尺度：100mV");
+        break;
+    case 3:
+        ui->label_voltage->setText("幅值尺度：200mV");
+        break;
+    case 4:
+        ui->label_voltage->setText("幅值尺度：500mV");
+        break;
+    case 5:
+        ui->label_voltage->setText("幅值尺度：1000mV");
+        break;
+    default:
+        ui->label_voltage->setText("error: no such index");
+        break;
+    }
+    wave->setRangeY(-this->axis_y_range[axis_y_index], this->axis_y_range[axis_y_index]);
+}
+
+
+void MainWindow::on_voltage_plus_btn_clicked()
+{
+    if(axis_y_index + 1 > 5)
+    {
+        ;
+    }
+    else
+    {
+        axis_y_index++;
+    }
+    switch(axis_y_index)
+    {
+    case 0:
+        ui->label_voltage->setText("幅值尺度：10mV");
+        break;
+    case 1:
+        ui->label_voltage->setText("幅值尺度：50mV");
+        break;
+    case 2:
+        ui->label_voltage->setText("幅值尺度：100mV");
+        break;
+    case 3:
+        ui->label_voltage->setText("幅值尺度：200mV");
+        break;
+    case 4:
+        ui->label_voltage->setText("幅值尺度：500mV");
+        break;
+    case 5:
+        ui->label_voltage->setText("幅值尺度：1000mV");
+        break;
+    default:
+        ui->label_voltage->setText("error: no such index");
+        break;
+    }
+    wave->setRangeY(-this->axis_y_range[axis_y_index], this->axis_y_range[axis_y_index]);
+}
+
