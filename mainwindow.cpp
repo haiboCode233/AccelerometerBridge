@@ -9,7 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
     //api
 
     receiver = new Udp_Receiver;
-    receiver->moveToThread(&receiverThread);
+    auto callback = [this]() {  onDataReceived(); };
+    std::thread thread_receiver(&Udp_Receiver::loopReceive_callback, receiver, callback);
+    thread_receiver.detach();
+
     writer = new file_writer;
 
     //  网络检查
@@ -32,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     timer_1s = new QTimer();
     timer_1s->start(1000);
 
-    connect(receiver, &Udp_Receiver::data_received, this, &MainWindow::onDataReceived, Qt::QueuedConnection);
     connect(timer_udp, &QTimer::timeout, net_checker, &NetCheck::PeriodNetCheck);  // 定时器启动并且达到定时时间，说明未接收到消息
+    connect(this, &MainWindow::data_received, this, &MainWindow::StopUdpTimer);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::StartUdpTimer);
     connect(timer_1s, &QTimer::timeout, this, &MainWindow::onHourlyTimeout);
     connect(net_win, &netwindow::sig_netbtn_work, this, &MainWindow::set_netbtn_work);  //  网络窗口关闭释放网络按钮
@@ -41,7 +44,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::start_recv, this, &MainWindow::api_start_receive);
     connect(this, &MainWindow::stop_recv, this, &MainWindow::api_stop_receive);
 
-    receiverThread.start();
 }
 
 MainWindow::~MainWindow()
@@ -86,6 +88,11 @@ void MainWindow::readJson()
 void MainWindow::StartUdpTimer(void)
 {
     timer_udp->start(1000);
+}
+
+void MainWindow::StopUdpTimer(void)
+{
+    timer_udp->stop();
 }
 
 void MainWindow::call_onDataReceived()
@@ -154,7 +161,6 @@ void MainWindow::onDataReceived()
         }
         wave->addSeriesData((WAVE_CH)i,this->wave_data[i]);
     }
-    timer_udp->stop();
     emit data_received();
 }
 
@@ -218,7 +224,7 @@ void MainWindow::on_pushButton_start_pause_clicked()
         ui->pushButton_start_pause->setText("关闭接收");
         writer->autoFileName();
         writer->outputfile.open(writer->outPutFileName, std::ios_base::app);
-        QMetaObject::invokeMethod(receiver, &Udp_Receiver::loopReceive);
+        receiver->startReceive();
         emit start_recv();
         emit is_recvbtn_clicked(true);
     }
@@ -226,6 +232,7 @@ void MainWindow::on_pushButton_start_pause_clicked()
     {
         ui->pushButton_start_pause->setText("开始接收");
         writer->outputfile.close();
+        receiver->stopReceive();
         emit stop_recv();
         emit is_recvbtn_clicked(false);
     }

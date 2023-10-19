@@ -30,6 +30,7 @@ private slots:
     void readJson();
     void onHourlyTimeout();
     void StartUdpTimer(void);
+    void StopUdpTimer(void);
     void call_onDataReceived();
     void onDataReceived_callback();
     void onDataReceived();
@@ -131,7 +132,6 @@ private:
     QList<QPointF> wave_data_rolling[4];
 
     // QThread
-    QThread receiverThread;
     QThread writerThread;
 
 

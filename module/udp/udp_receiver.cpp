@@ -1,7 +1,6 @@
 #include "udp_receiver.h"
 
-Udp_Receiver::Udp_Receiver(QObject *parent)
-    : QObject{parent}
+Udp_Receiver::Udp_Receiver()
 {
     ;
 }
@@ -34,7 +33,6 @@ void Udp_Receiver::loopReceive()
         if(isRunning)
         {
             udpreceiver.startReceive_new(udpOutData);
-            emit data_received();
         }
         else
         {

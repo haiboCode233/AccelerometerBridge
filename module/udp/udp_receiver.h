@@ -2,16 +2,14 @@
 #define UDP_RECEIVER_H
 
 #include <QDebug>
-#include <QObject>
 #include "udp.h"
 #include <thread>
 
-class Udp_Receiver :public QObject
+class Udp_Receiver
 {
-    Q_OBJECT
 
 public:
-    Udp_Receiver(QObject *parent = nullptr);
+    Udp_Receiver();
     ~Udp_Receiver();
     udp_data udpOutData;
     void get_bias();
@@ -24,9 +22,6 @@ public:
 private:
     bool isRunning = false;
     UDPReceiver udpreceiver;
-signals:
-    void data_received();
-
 };
 
 
